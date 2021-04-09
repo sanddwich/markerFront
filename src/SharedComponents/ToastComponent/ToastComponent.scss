@@ -1,0 +1,28 @@
+.ToastComponent {
+  .ToastComponent__sendRequestMessage {
+    position: fixed;
+    top: 20px; right: 20px;
+    width: 300px;
+    color: #ffffff;
+    cursor: pointer;
+    animation-duration: 1s;
+    z-index: 2000;
+
+    .ToastComponent__sendRequestMessageMsg {
+      padding: 20px;
+      padding-top: 0;
+    }
+
+    img {
+      width: 30px;
+    }
+  }
+
+  .successMessage {
+    background-color: rgba(0, 158, 79, .8);
+  }
+
+  .errorMessage {
+    background-color: rgba(134, 0, 0, .8);
+  }
+}
