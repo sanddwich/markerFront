@@ -1,11 +1,12 @@
-import { SET_APP_ERROR, SET_APP_LOADING, SET_APP_TARIFF } from '../constants/ActionTypes'
+import { SET_APP_ERROR, SET_APP_LOADING, SET_APP_MARKETUSER, SET_APP_TARIFF } from '../constants/ActionTypes'
 import { AppActionType } from '../interfaces/app'
 import { AppState } from '../interfaces/interfaces'
 
 const initialState: AppState = {
   error: '',
-  loading: true,
+  loading: false,
   tariff: '',
+  marketUser: null,
 }
 
 const app = (state: AppState = initialState, action: AppActionType) => {
@@ -24,6 +25,11 @@ const app = (state: AppState = initialState, action: AppActionType) => {
       return {
         ...state,
         tariff: action.tariff,
+      }
+    case SET_APP_MARKETUSER:
+      return {
+        ...state,
+        marketUser: action.marketUser,
       }
     default:
       return state

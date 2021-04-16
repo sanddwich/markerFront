@@ -1,7 +1,10 @@
+import { MarketUser } from "./AdditionalInterfaces/MarketUser";
+
 export interface AppState {
   loading: boolean
   error: string
   tariff: string
+  marketUser: MarketUser | null
 }
 
 export interface ToastState {
