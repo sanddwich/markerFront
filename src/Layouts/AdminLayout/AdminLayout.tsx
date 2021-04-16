@@ -1,40 +1,49 @@
-import React from 'react'
+import { useEffect, useState } from 'react'
 import { Container } from 'react-bootstrap'
 import { Redirect, Route, RouteComponentProps, Switch } from 'react-router-dom'
 import './AdminLayout.scss'
+import AdminAuth from './Pages/AdminAuth/AdminAuth'
 import AdminPage from './Pages/AdminPage/AdminPage'
-import AdminProfile from './Pages/AdminProfile/AdminProfile'
+import AdminProducts from './Pages/AdminProducts/AdminProducts'
 
 interface MatchParams {
   id: string
 }
 
+// const calculateState = ():number => {
+//   console.log('calculateState')
+//   return Math.trunc(Math.random() * 10)
+// }
+
 interface AdminLayoutProps extends RouteComponentProps<MatchParams> {}
 
-interface AdminLayoutState {}
+const AdminLayout = (props: AdminLayoutProps) => {
+  // const [counter, setCounter] = useState(() => {
+  //   return calculateState()
+  // })
 
-class AdminLayout extends React.Component<AdminLayoutProps, AdminLayoutState> {
-  constructor(props: AdminLayoutProps) {
-    super(props)
-    // console.log(this.props)
-    if (true) {
-      this.props.history.push('/')  //Переадресация с админки на MAIN компонент по умолчанию
-    }
-  }
-  
-  render() {
-    return (
-      <Container fluid className="AdminLayout p-0">
-        <h1>AdminLayout</h1>
-        <Switch>
-          <Route path="/admin" exact component={AdminPage} />
-          <Route path="/admin/profile" exact component={AdminProfile} />
+  // const changeCounter = (): void => {
+  //   setCounter(previousCounter => {
+  //     return previousCounter + 1
+  //   })
+  //   setCounter(previousCounter => previousCounter +1)
+  // }
 
-          <Redirect to='/' />
-        </Switch>
-      </Container>
-    )
-  }
+  useEffect(() => {
+    // props.history.push('/')
+  })
+
+  return (
+    <Container fluid className="AdminLayout p-0">
+      <Switch>
+        <Route path="/admin" exact component={AdminPage} />
+        <Route path="/admin/products" exact component={AdminProducts} />
+        <Route path="/admin/auth" exact component={AdminAuth} />
+
+        <Redirect to="/" />
+      </Switch>
+    </Container>
+  )
 }
 
 export default AdminLayout

@@ -1,0 +1,21 @@
+.AdminAuth {
+  width: 100%;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+
+  font-family: 'Montserrat';
+  font-style: normal;
+
+  h1 {
+    font-size: 24px;
+    line-height: 120%;
+    font-weight: bold;
+    text-align: center;
+  }
+
+  .AdminAuth__content {
+    width: 600px;
+  }
+}
