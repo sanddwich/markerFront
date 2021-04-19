@@ -16,7 +16,7 @@ export const setAppTariff = (tariff: string) => ({
   tariff,
 })
 
-export const setAppMarketUser = (marketUser: MarketUser) => ({
+export const setAppMarketUser = (marketUser: MarketUser | null) => ({
   type: SET_APP_MARKETUSER,
   marketUser,
 })
