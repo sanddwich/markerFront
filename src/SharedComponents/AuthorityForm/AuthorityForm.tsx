@@ -28,16 +28,33 @@ interface FormValues {
 }
 
 const AuthorityForm = (props: AuthorityFormProps) => {
+  const [formLoader, setFormLoader] = useState(true)
+
+  const [formAdditionalErrors, setFormAdditionalErrors] = useState({
+    buttonLoading: false,
+    formError: '',
+    requiredMessageText: 'Обязательное поле для заполнения',
+    minLengthMessageText: 'Ввведено недостаточное кол-во символов',
+    patternMessageText: 'Неверный формат данных',
+  })
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormValues>()
+
   useEffect(() => {
     const marketUser = localStorage.getItem('marketUser')
     if (marketUser) {
       const apiToken = JSON.parse(marketUser).apiToken
       checkAuth(apiToken)
+    } else {
+      setFormLoader(false)
     }
   })
 
   const checkAuth = async (apiToken: string): Promise<any> => {
-
     const api = axios.create({
       baseURL: Config.backConnectData.backendURL,
       withCredentials: true,
@@ -61,23 +78,9 @@ const AuthorityForm = (props: AuthorityFormProps) => {
       })
     } catch (e) {
       localStorage.removeItem('marketUser')
+      setFormLoader(false)
     }
-    
   }
-
-  const [formAdditionalErrors, setFormAdditionalErrors] = useState({
-    buttonLoading: false,
-    formError: '',
-    requiredMessageText: 'Обязательное поле для заполнения',
-    minLengthMessageText: 'Ввведено недостаточное кол-во символов',
-    patternMessageText: 'Неверный формат данных',
-  })
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<FormValues>()
 
   const setFormError = (error: string): void => {
     setFormAdditionalErrors({ ...formAdditionalErrors, formError: error })
@@ -119,7 +122,7 @@ const AuthorityForm = (props: AuthorityFormProps) => {
           props.history.push('/admin')
         } else {
           setFormError('Ошибка авторизации')
-          console.log(res)
+          // console.log(res)
         }
       })
     } catch (e) {
@@ -134,8 +137,8 @@ const AuthorityForm = (props: AuthorityFormProps) => {
 
   return (
     <Container fluid className="AuthorityForm">
-      {props.app.loading ? (
-        <div className="AuthorityForm__loader">
+      {formLoader ? (
+        <div className="AuthorityForm__loader d-flex justify-content-center">
           <div className="lds-roller">
             <div></div>
             <div></div>

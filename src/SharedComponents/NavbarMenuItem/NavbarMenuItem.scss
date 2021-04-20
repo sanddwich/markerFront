@@ -1,0 +1,26 @@
+.NavbarMenuItem {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-size: 18px;
+  font-weight: 500;
+  color: #f8f9fa;
+  cursor: pointer;
+  padding: 5px;
+  padding-left: 15px;
+  padding-right: 15px;
+
+  &:hover {
+    svg {
+      fill: #7dbaec;
+    }
+
+    .NavbarMenuItem__title {
+      color:#7dbaec;
+    }
+  }
+
+  .NavbarMenuItem__title {
+    padding-left: 10px;
+    text-transform: uppercase;
+  }
+}
