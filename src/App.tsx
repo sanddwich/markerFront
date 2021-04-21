@@ -5,11 +5,13 @@ import AdminLayout from './Layouts/AdminLayout/AdminLayout'
 import MainLayout from './Layouts/MainLayout/MainLayout'
 import { connect } from 'react-redux'
 import { RootState } from './Redux'
-import { ToastState } from './Redux/interfaces/interfaces'
+import { ModalState, ToastState } from './Redux/interfaces/interfaces'
 import ToastComponent from './SharedComponents/ToastComponent/ToastComponent'
+import MobileMenu from './SharedComponents/MobileMenu/MobileMenu'
 
 interface AppProps {
   toast: ToastState
+  modal: ModalState
 }
 
 const App = (props: AppProps) => {
@@ -23,6 +25,7 @@ const App = (props: AppProps) => {
 
   return (
     <Container fluid className="App p-0">
+      {props.modal.mobileMenu.isActive && <MobileMenu />}
       {props.toast.isActive && <ToastComponent />}
 
       <Switch>
@@ -37,8 +40,10 @@ const mapDispatchToProps = {}
 
 const mapStateToProps = (state: RootState) => {
   const toast = state.toast
+  const modal = state.modal
   return {
     toast,
+    modal,
   }
 }
 

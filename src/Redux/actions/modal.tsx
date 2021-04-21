@@ -1,4 +1,4 @@
-import { HIDE_REQUESTFORM_MODAL, SHOW_REQUESTFORM_MODAL } from "../constants/ActionTypes"
+import { HIDE_REQUESTFORM_MODAL, SET_MOBILE_MENU, SHOW_REQUESTFORM_MODAL } from "../constants/ActionTypes"
 
 export const showRequestModal = () => ({
   type: SHOW_REQUESTFORM_MODAL
@@ -6,4 +6,9 @@ export const showRequestModal = () => ({
 
 export const hideRequestModal = () => ({
   type: HIDE_REQUESTFORM_MODAL
+})
+
+export const setMobileMenu = (isActive: boolean) => ({
+  type: SET_MOBILE_MENU,
+  isActive,
 })

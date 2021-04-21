@@ -17,4 +17,7 @@ export interface ModalState {
   modalRequestForm: {
     isActive: boolean
   }
+  mobileMenu: {
+    isActive: boolean
+  }
 }

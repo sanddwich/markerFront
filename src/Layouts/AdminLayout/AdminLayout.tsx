@@ -23,8 +23,7 @@ interface AdminLayoutProps extends RouteComponentProps<MatchParams> {
   app: AppState
 }
 
-const AdminLayout = (props: AdminLayoutProps) => { 
-
+const AdminLayout = (props: AdminLayoutProps) => {
   // const [counter, setCounter] = useState(() => {
   //   return calculateState()
   // })
@@ -43,8 +42,8 @@ const AdminLayout = (props: AdminLayoutProps) => {
   })
 
   return (
-    <Container fluid className="AdminLayout p-0">
-      {props.app.marketUser && (<AdminHeader />)}
+    <Container fluid className="AdminLayout">
+      {props.app.marketUser && <AdminHeader />}
 
       <Switch>
         <Route path="/admin" exact component={AdminPage} />
