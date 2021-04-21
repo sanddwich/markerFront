@@ -43,21 +43,21 @@ const MobileMenu = (props: MobileMenuProps) => {
       </Row>
       <Row className="MobileMenu__Row">
         <Col className="MobileMenu__Col">
-          <div className="MobileMenu__menuEl">
+          <div className="MobileMenu__menuEl" onClick={() => closeButton(null)}>
             <NavLink to="/admin">
               <NavbarMenuItem title={`Профиль`}>
                 <Icon.PersonSquare width={30} height={30} fill={`#f8f9fa`} />
               </NavbarMenuItem>
             </NavLink>
           </div>
-          <div className="MobileMenu__menuEl">
+          <div className="MobileMenu__menuEl" onClick={() => closeButton(null)}>
             <NavLink to="/admin/products">
               <NavbarMenuItem title={`Продукты`}>
                 <Icon.BasketFill width={30} height={30} fill={`#f8f9fa`} />
               </NavbarMenuItem>
             </NavLink>
           </div>
-          <div className="MobileMenu__menuEl">
+          <div className="MobileMenu__menuEl" onClick={() => closeButton(null)}>
             <NavLink to="/admin/categories">
               <NavbarMenuItem title={`Категории`}>
                 <Icon.CardList width={30} height={30} fill={`#f8f9fa`} />
