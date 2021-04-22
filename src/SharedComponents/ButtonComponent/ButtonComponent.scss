@@ -1,0 +1,31 @@
+.ButtonComponent {
+  background-color: #0068a5;
+  padding: 10px;
+  padding-left: 20px;
+  padding-right: 20px;
+  cursor: pointer;  
+
+  .NavbarMenuItem__icon {
+    svg {
+      fill: #f8f9fa;
+    }
+  }
+
+  .NavbarMenuItem__title {
+    color: #f8f9fa;
+  }
+
+  &:hover {
+    background-color: #0176b9;
+
+    .NavbarMenuItem__icon {
+      svg {
+        fill: #f8f9fa;
+      }
+    }
+
+    .NavbarMenuItem__title {
+      color: #f8f9fa;
+    }
+  }
+}

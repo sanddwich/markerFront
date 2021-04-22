@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import { RootState } from '../../Redux'
 import { hideToast } from '../../Redux/actions/toast'
 import { ToastState } from '../../Redux/interfaces/interfaces'
+import * as Icon from 'react-bootstrap-icons'
 import './ToastComponent.scss'
 
 interface ToastComponentProps {
@@ -28,7 +29,7 @@ class ToastComponent extends React.Component<ToastComponentProps, ToastComponent
             >
               <Row className="m-0 d-flex justify-content-end">
                 <div className="ToastComponent__sendRequestMessageCloseBtn" onClick={() => this.props.hideToast()}>
-                  <img src="/img/close__white.svg" alt="" />
+                  <Icon.XSquare width={30} height={30} fill={`#f8f9fa`} />
                 </div>
               </Row>
               <Row className="m-0 ToastComponent__sendRequestMessageMsg">{this.props.toast.message}</Row>

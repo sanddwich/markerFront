@@ -1,0 +1,35 @@
+.PropertyReferenceCard {
+  font-family: 'Montserrat';
+  font-style: normal;
+  line-height: 140%;
+
+  padding-top: 5px !important;
+  padding-bottom: 5px !important;
+  
+  border-top: 1px solid #a0a0a0;  
+  border-bottom: 1px solid #a0a0a0;  
+
+  .PropertyReferenceCard__title {
+    margin-bottom: 10px !important;
+  }
+
+  .PropertyReferenceCard__nameValue {
+    background-color: #212529;
+    color: #f8f9fa;
+    padding: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    // border-bottom: 1px dashed #a0a0a0;
+    font-weight: 600;
+  }
+
+  .PropertyReferenceCard__image {
+    width: 50px;
+    height: 50px;
+    margin-right: 10px;
+  }
+
+  .PropertyReferenceCard__description {
+    // font-size: 12px;
+  }
+}

@@ -63,8 +63,9 @@ const AuthorityForm = (props: AuthorityFormProps) => {
       },
     })
 
-    try {
-      await api.get('/api/admin/checkAuth').then((res) => {
+    await api
+      .get('/api/admin/checkAuth')
+      .then((res) => {
         const marketUser: MarketUser = {
           apiToken,
           name: res.data.user.name,
@@ -76,10 +77,10 @@ const AuthorityForm = (props: AuthorityFormProps) => {
         localStorage.setItem('marketUser', JSON.stringify(marketUser))
         res.data && props.history.push('/admin')
       })
-    } catch (e) {
-      localStorage.removeItem('marketUser')
-      setFormLoader(false)
-    }
+      .catch((error) => {
+        localStorage.removeItem('marketUser')
+        setFormLoader(false)
+      })
   }
 
   const setFormError = (error: string): void => {
@@ -101,12 +102,9 @@ const AuthorityForm = (props: AuthorityFormProps) => {
       withCredentials: true,
     })
 
-    // await api.get(Config.backConnectData.backendURL + '/sanctum/csrf-cookie').then((res) => {
-    //   console.log(res)
-    // })
-
-    try {
-      await api.post('/api/admin/login', data).then((res) => {
+    await api
+      .post('/api/admin/login', data)
+      .then((res) => {
         if (res.status === 200 && res.data.apiToken) {
           const marketUser: MarketUser = {
             apiToken: res.data.apiToken,
@@ -125,10 +123,10 @@ const AuthorityForm = (props: AuthorityFormProps) => {
           // console.log(res)
         }
       })
-    } catch (e) {
-      setFormError('Ошибка связи с серверной частью приложения')
-      console.log(e)
-    }
+      .catch((error) => {
+        setFormError('Ошибка связи с серверной частью приложения')
+        console.log(error)
+      })
 
     setFormAdditionalErrors((prevState) => ({ ...prevState, buttonLoading: false }))
   }

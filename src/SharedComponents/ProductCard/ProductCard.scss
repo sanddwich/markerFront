@@ -1,3 +1,83 @@
 .ProductCard {
+  box-shadow: 0 0 5px #7c7c7c;
+  font-family: 'Montserrat';
+  font-style: normal;
+  line-height: 140%;
+
+  .ProductCard__image {
+    height: 400px;
+  }
+
+  .ProductCard__info {
+    padding: 15px;
+  }
+
+  .ProductCard__name {
+    font-size: 22px;
+    font-weight: 600;
+    text-transform: uppercase;
+    padding-bottom: 10px;
+  }
+
+  .ProductCard__descriptionCont {
+    border-top: 1px solid #a0a0a0;  
+  border-bottom: 1px solid #a0a0a0;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
+  .ProductCard__price {
+    font-size: 22px;
+    line-height: 140%;
+    padding-bottom: 10px;
+    font-weight: 600;
+    color: #0068a5;
+  }
+
+  .ProductCard__button {
+    padding-top: 30px;
+    padding-right: 15px;
+  }
+
+  .ProductCard__description {
+    font-size: 18px;
+    // margin-bottom: 10px !important;
+  }
+
+  .ProductCard__props, .ProductCard__descriptionTitle {
+    // padding-bottom: 10px;
+    &:hover {
+      svg {
+        fill: #0d66c0;
+      }
+      .NavbarMenuItem__title {
+        color: #0d66c0;
+      }
+    }
+
+    .NavbarMenuItem__title {
+      text-decoration: underline;
+      color: #212529;
+    }
+  }
   
+  .ProductCard__props {
+    padding-top: 5px;
+    text-decoration: underline;
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;    
+  }
+
+  @media screen and(max-width:1700px) {
+    .ProductCard__image {
+      height: 350px;
+    }
+  }
+
+  @media screen and(max-width:1500px) {
+    .ProductCard__image {
+      height: 300px;
+    }
+  }
 }
