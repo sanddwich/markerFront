@@ -46,6 +46,10 @@ const AdminHeader = (props: AdminHeaderProps) => {
     localStorage.removeItem('marketUser')
     props.setAppMarketUser(null)
   }
+  
+  const bodyUnBlock = (): void => {
+    document.querySelector('body')?.classList.remove('modal-open')
+  }
 
   const commandRequestHandler = (commandName: string | null): void => {
     const command = commandList.find((command) => command.name === commandName)
@@ -54,6 +58,7 @@ const AdminHeader = (props: AdminHeaderProps) => {
 
   const toggleMobileMenu = (commandName: string | null): void => {
     const isActive = !props.modal.mobileMenu.isActive
+    bodyUnBlock()
     props.setMobileMenu(isActive)
   }
 

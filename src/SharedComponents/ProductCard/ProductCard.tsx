@@ -2,10 +2,11 @@ import React, { useState } from 'react'
 import { Container, Row } from 'react-bootstrap'
 import Product from '../../Redux/interfaces/AdditionalInterfaces/Product'
 import NavbarMenuItem from '../NavbarMenuItem/NavbarMenuItem'
-import PropertyReferenceCard from '../Property/PropertyReferenceCard'
+import PropertyReferenceCard from '../PropertyReferenceCard/PropertyReferenceCard'
 import * as Icon from 'react-bootstrap-icons'
 import './ProductCard.scss'
 import ButtonComponent from '../ButtonComponent/ButtonComponent'
+import ProductReferenceCard from '../ProductReferenceCard/ProductReferenceCard'
 
 interface ProductCardProps {
   product: Product
@@ -14,6 +15,7 @@ interface ProductCardProps {
 const ProductCard = (props: ProductCardProps) => {
   const [propsShow, setPropsShow] = useState(false)
   const [descShow, setDescShow] = useState(false)
+  const [pToPReferenceShow, setPToPReferenceShow] = useState(false)
 
   const togglePropsShow = (): void => {
     const val = !propsShow
@@ -23,6 +25,11 @@ const ProductCard = (props: ProductCardProps) => {
   const toggleDescShow = (): void => {
     const val = !descShow
     setDescShow(val)
+  }
+
+  const togglePToPRefsShow = (): void => {
+    const val = !pToPReferenceShow
+    setPToPReferenceShow(val)
   }
 
   const getRoubles = (val: number): string => {
@@ -65,6 +72,22 @@ const ProductCard = (props: ProductCardProps) => {
               {propsShow &&
                 props.product.property_reference.map((prop) => {
                   return <PropertyReferenceCard key={prop.id} propRef={prop} />
+                })}
+            </Row>
+          </React.Fragment>
+        )}
+
+        {props.product.p_to_p_referense.length > 0 && (
+          <React.Fragment>
+            <Row className="ProductCard__props m-0" onClick={() => togglePToPRefsShow()}>
+              <NavbarMenuItem title="В комплект входит:">
+                <Icon.LayerBackward width={15} height={15} fill={`#212529`} />
+              </NavbarMenuItem>
+            </Row>
+            <Row className="ProductCard__propsList m-0">
+              {pToPReferenceShow &&
+                props.product.p_to_p_referense.map((productReference) => {
+                  return <ProductReferenceCard key={productReference.id} product={productReference.product_item} />
                 })}
             </Row>
           </React.Fragment>
