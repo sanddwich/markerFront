@@ -16,6 +16,7 @@ const ProductCard = (props: ProductCardProps) => {
   const [propsShow, setPropsShow] = useState(false)
   const [descShow, setDescShow] = useState(false)
   const [pToPReferenceShow, setPToPReferenceShow] = useState(false)
+  const [pToPAddReferenceShow, setPToPAddReferenceShow] = useState(false)
 
   const togglePropsShow = (): void => {
     const val = !propsShow
@@ -30,6 +31,11 @@ const ProductCard = (props: ProductCardProps) => {
   const togglePToPRefsShow = (): void => {
     const val = !pToPReferenceShow
     setPToPReferenceShow(val)
+  }
+
+  const togglePToPAddReferenceShow = (): void => {
+    const val = !pToPAddReferenceShow
+    setPToPAddReferenceShow(val)
   }
 
   const getRoubles = (val: number): string => {
@@ -88,6 +94,27 @@ const ProductCard = (props: ProductCardProps) => {
               {pToPReferenceShow &&
                 props.product.p_to_p_referense.map((productReference) => {
                   return <ProductReferenceCard key={productReference.id} product={productReference.product_item} />
+                })}
+            </Row>
+          </React.Fragment>
+        )}
+
+        {props.product.p_to_p_additional_reference.length > 0 && (
+          <React.Fragment>
+            <Row className="ProductCard__props m-0" onClick={() => togglePToPAddReferenceShow()}>
+              <NavbarMenuItem title="Доп-ные продукты:">
+                <Icon.LayerBackward width={15} height={15} fill={`#212529`} />
+              </NavbarMenuItem>
+            </Row>
+            <Row className="ProductCard__propsList m-0">
+              {pToPAddReferenceShow &&
+                props.product.p_to_p_additional_reference.map((additionalProductReference) => {
+                  return (
+                    <ProductReferenceCard
+                      key={additionalProductReference.id}
+                      product={additionalProductReference.product_item}
+                    />
+                  )
                 })}
             </Row>
           </React.Fragment>

@@ -23,7 +23,8 @@ const PropertyReferenceCard = (props: PropertyReferenceCardProps) => {
         <Col xs={12} className="PropertyReferenceCard__info p-0">
           <Container fluid className="PropertyReferenceCard__Property p-0">
             <Row className="PropertyReferenceCard__title m-0 d-flex justify-content-start">
-              <Col xs={3}
+              <Col
+                xs={3}
                 className="PropertyReferenceCard__image"
                 style={{
                   backgroundImage: `url("https://picsum.photos/100/100?random=${props.propRef.property.image.id}")`,
@@ -40,14 +41,23 @@ const PropertyReferenceCard = (props: PropertyReferenceCardProps) => {
                 </div>
               </Col>
             </Row>
-            <Row className="PropertyReferenceCard__additional m-0">
-              <div className="PropertyReferenceCard__additionalTitle w-100 d-flex justify-content-center" onClick={() => toggleDescr()}>
-                <NavbarMenuItem title="Описание свойства:">
-                  <Icon.LayerBackward width={12} height={12} fill={`#212529`} />
-                </NavbarMenuItem>
-              </div>
-              {descr && <div className="PropertyReferenceCard__description">{props.propRef.property.description}</div>}
-            </Row>
+            
+            {typeof props.propRef.property.description === 'string' && props.propRef.property.description !== '' && (
+              <Row className="PropertyReferenceCard__additional m-0">
+                <div
+                  className="PropertyReferenceCard__additionalTitle w-100 d-flex justify-content-center"
+                  onClick={() => toggleDescr()}
+                >
+                  <NavbarMenuItem title="Описание свойства:">
+                    <Icon.LayerBackward width={12} height={12} fill={`#212529`} />
+                  </NavbarMenuItem>
+                </div>
+                {descr && (
+                  <div className="PropertyReferenceCard__description">{props.propRef.property.description}</div>
+                )}
+              </Row>
+            )}
+            
           </Container>
         </Col>
       </Row>
