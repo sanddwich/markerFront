@@ -27,7 +27,11 @@ const ProductReferenceCard = (props: ProductReferenceCardProps) => {
                 <div className="ProductReferenceCard__image">
                   <img
                     className="img-fluid"
-                    src={`https://picsum.photos/100/100?random=${props.product.id}`}
+                    src={
+                      props.product.images.length > 0
+                        ? `https://picsum.photos/100/100?random=${props.product.id}`
+                        : `/img/defaultImage.jpg`
+                    }
                     alt={props.product.name}
                   />
                 </div>

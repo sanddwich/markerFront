@@ -4,8 +4,7 @@ export default interface Property {
   created_at: string
   description: string
   id: number
-  image: Image
-  image_id: number
+  images: Image[]
   name: string
   product_part: boolean
   unit: string

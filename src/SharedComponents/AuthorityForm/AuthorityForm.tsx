@@ -52,7 +52,7 @@ const AuthorityForm = (props: AuthorityFormProps) => {
     } else {
       setFormLoader(false)
     }
-  })
+  }, [])
 
   const checkAuth = async (apiToken: string): Promise<any> => {
     const api = axios.create({
@@ -78,7 +78,7 @@ const AuthorityForm = (props: AuthorityFormProps) => {
         res.data && props.history.push('/admin')
       })
       .catch((error) => {
-        localStorage.removeItem('marketUser')
+        setFormError('Ошибка связи с серверной частью приложения')
         setFormLoader(false)
       })
   }

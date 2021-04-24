@@ -27,9 +27,13 @@ const PropertyReferenceCard = (props: PropertyReferenceCardProps) => {
                 xs={3}
                 className="PropertyReferenceCard__image"
                 style={{
-                  backgroundImage: `url("https://picsum.photos/100/100?random=${props.propRef.property.image.id}")`,
+                  backgroundImage:
+                    props.propRef.property.images.length > 0
+                      ? `url("https://picsum.photos/300/300?random=${props.propRef.property.id}")`
+                      : `url("/img/defaultImage.jpg")`,
                   backgroundSize: 'cover',
                   backgroundRepeat: 'no-repeat',
+                  backgroundPosition: 'center',
                 }}
               ></Col>
               <Col xs={9} className="PropertyReferenceCard__nameValue d-flex align-items-center">
@@ -41,7 +45,7 @@ const PropertyReferenceCard = (props: PropertyReferenceCardProps) => {
                 </div>
               </Col>
             </Row>
-            
+
             {typeof props.propRef.property.description === 'string' && props.propRef.property.description !== '' && (
               <Row className="PropertyReferenceCard__additional m-0">
                 <div
@@ -57,7 +61,6 @@ const PropertyReferenceCard = (props: PropertyReferenceCardProps) => {
                 )}
               </Row>
             )}
-            
           </Container>
         </Col>
       </Row>

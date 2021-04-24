@@ -1,0 +1,19 @@
+.ImgSlider {
+  padding: 10px;
+
+  .ImgSlider__pagination {
+    padding: 10px;
+    padding-bottom: 0;
+    .swiper-pagination-bullet {
+      width: 10px !important;
+      height: 10px !important;
+      border-radius: 50%;
+      background-color: #c4c4c4;
+      margin-right: 10px;
+    }
+
+    .swiper-pagination-bullet-active {
+      background-color: #0068a5;
+    }
+  }
+}

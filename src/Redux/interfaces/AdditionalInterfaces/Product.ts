@@ -10,8 +10,7 @@ export default interface Product {
   description: string
   hidden: boolean
   id: number
-  image: Image
-  image_id: number
+  images: Image[]
   name: string
   price: number
   p_to_p_referense: PToPReference[]

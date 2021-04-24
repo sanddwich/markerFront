@@ -20,4 +20,7 @@ export interface ModalState {
   mobileMenu: {
     isActive: boolean
   }
+  modalWindow: {
+    isActive: boolean
+  }
 }
