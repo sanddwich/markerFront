@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Col, Container, Row } from 'react-bootstrap'
-import { useForm } from 'react-hook-form'
 import Product from '../../Redux/interfaces/AdditionalInterfaces/Product'
+import InputNumberFormat from '../InputNumberFormat/InputNumberFormat'
 import './ChangeProductForm.scss'
 
 interface ChangeProductFormProps {
@@ -9,19 +9,22 @@ interface ChangeProductFormProps {
 }
 
 interface FormValues {
-  productName: string
-  productPrice: string
-  productDescription: string
+  currentName: string
+  currentPrice: number
+  currentDescription: string
 }
 
 const ChangeProductForm = (props: ChangeProductFormProps) => {
-  const [formLoader, setFormLoader] = useState(true)
+  const [formLoader, setFormLoader] = useState(false)
+  const [formValues, setFormValues] = useState<FormValues>({
+    currentName: props.product.name,
+    currentPrice: props.product.price,
+    currentDescription: props.product.description,
+  })
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<FormValues>()
+  const controlChangeHandler = (name: string, value: string): void => {
+    console.log('controlChangeHandler')
+  }
 
   return (
     <Container fluid className="ChangeProductForm">
@@ -42,7 +45,13 @@ const ChangeProductForm = (props: ChangeProductFormProps) => {
         <Container fluid className="ChangeProductForm__container p-0">
           <Row className="ChangeProductForm__Row">
             <Col xs={12} md={6} className="ChangeProductForm__name">
-              
+              <InputNumberFormat
+                controlChangeHandler={controlChangeHandler}
+                name={'currentPrice'}
+                value={props.product.price}
+                mask="0.00"
+                
+              />
             </Col>
             <Col xs={12} md={6} className="ChangeProductForm__price"></Col>
           </Row>
