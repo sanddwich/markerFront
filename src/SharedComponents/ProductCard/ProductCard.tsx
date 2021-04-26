@@ -9,6 +9,7 @@ import ButtonComponent from '../ButtonComponent/ButtonComponent'
 import ProductReferenceCard from '../ProductReferenceCard/ProductReferenceCard'
 import ImgSlider from '../ImgSlider/ImgSlider'
 import ModalWindow from '../ModalWindow/ModalWindow'
+import ChangeProductForm from '../ChangeProductForm/ChangeProductForm'
 
 interface ProductCardProps {
   product: Product
@@ -60,8 +61,9 @@ const ProductCard = (props: ProductCardProps) => {
       {modalWindow && (
         <ModalWindow
           closeHandler={closeFormHandler}
-          title="Lorem ipsum dolor sit, amet consectetur adipisicing elit. Dicta saepe, facilis tempore ex harum, minima similique veniam quo doloremque inventore accusamus, labore sapiente! Ipsam sunt adipisci impedit sint id quis!"
-        />
+          title="Изменение продукта">
+            <ChangeProductForm product={props.product} />
+        </ModalWindow>
       )}
 
       <Row
