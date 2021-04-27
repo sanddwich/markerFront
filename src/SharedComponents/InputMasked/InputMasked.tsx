@@ -48,7 +48,8 @@ const InputMasked = (props: InputMaskedProps) => {
     <Container fluid className="InputMasked p-0">
       <Form.Group>
         <Form.Label>{props.name}</Form.Label>
-        <ReactInputMask mask={getMask()} maskChar="-" />
+        {/* <ReactInputMask mask={getMask()} maskChar="-" /> */}
+        <ReactInputMask mask="99[.99]" />
       </Form.Group>
     </Container>
   )

@@ -1,57 +1,62 @@
 import React, { useState } from 'react'
 import { Col, Container, Row } from 'react-bootstrap'
 import Product from '../../Redux/interfaces/AdditionalInterfaces/Product'
+import ButtonComponent from '../ButtonComponent/ButtonComponent'
 import InputNumberFormat from '../InputNumberFormat/InputNumberFormat'
+import LoaderCircle from '../LoaderCircle/LoaderCircle'
+import NavbarMenuItem from '../NavbarMenuItem/NavbarMenuItem'
+import * as Icon from 'react-bootstrap-icons'
 import './ChangeProductForm.scss'
 
 interface ChangeProductFormProps {
   product: Product
 }
 
-interface FormValues {
-  currentName: string
-  currentPrice: number
-  currentDescription: string
-}
-
 const ChangeProductForm = (props: ChangeProductFormProps) => {
   const [formLoader, setFormLoader] = useState(false)
-  const [formValues, setFormValues] = useState<FormValues>({
-    currentName: props.product.name,
-    currentPrice: props.product.price,
-    currentDescription: props.product.description,
-  })
+  const [productNameInput, setProductNameInput] = useState(props.product.name)
+  const [productPriceInput, setProductPriceInput] = useState(props.product.price)
+  const [productDescriptionInput, setProductDescriptionInput] = useState(props.product.description)
 
-  const controlChangeHandler = (name: string, value: string): void => {
-    console.log('controlChangeHandler')
+  const productNameInputHandler = (value: string): void => {
+    setProductNameInput(value)
+  }
+
+  const productPriceInputHandler = (value: string): void => {
+    setProductPriceInput(parseInt(value))
+  }
+
+  const productDescriptionInputHandler = (value: string): void => {
+    setProductDescriptionInput(value)
   }
 
   return (
     <Container fluid className="ChangeProductForm">
       {formLoader ? (
-        <Container fluid className="ChangeProductForm__loader p-0 d-flex justify-content-center">
-          <div className="lds-roller">
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-          </div>
-        </Container>
+        <LoaderCircle />
       ) : (
         <Container fluid className="ChangeProductForm__container p-0">
           <Row className="ChangeProductForm__Row">
-            <Col xs={12} md={6} className="ChangeProductForm__name">
+            <Col xs={12} md={6} xl={4} className="ChangeProductForm__name p-0">
               <InputNumberFormat
-                controlChangeHandler={controlChangeHandler}
+                controlChangeHandler={productPriceInputHandler}
                 name={'currentPrice'}
+                title="Стоимость:"
                 value={props.product.price}
                 mask="0.00"
-                
+                currency="₽"
               />
+
+              {productPriceInput !== props.product.price && (
+                <div className="ChangeProductForm__nameActions">
+                  <ButtonComponent>
+                    <NavbarMenuItem title="Применить">
+                      <Icon.CheckCircle width={20} height={20} fill={`#212529`} />
+                    </NavbarMenuItem>
+                  </ButtonComponent>
+                </div>
+              )}
+
             </Col>
             <Col xs={12} md={6} className="ChangeProductForm__price"></Col>
           </Row>

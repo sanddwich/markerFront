@@ -1,4 +1,13 @@
-import { SET_APP_ERROR, SET_APP_LOADING, SET_APP_MARKETUSER, SET_APP_TARIFF } from "../constants/ActionTypes";
+import {
+  SET_APP_ERROR,
+  SET_APP_LOADING,
+  SET_APP_MARKETUSER,
+  SET_APP_PAGINATION,
+  SET_APP_PRODUCTS,
+  SET_APP_TARIFF,
+} from '../constants/ActionTypes'
+import Pagination from '../interfaces/AdditionalInterfaces/Pagination'
+import Product from './AdditionalInterfaces/Product'
 
 interface setAppLoading {
   type: typeof SET_APP_LOADING
@@ -20,8 +29,14 @@ interface setAppMarketUser {
   marketUser: string
 }
 
-export type AppActionType =
-  | setAppLoading
-  | setAppError
-  | setAppTariff
-  | setAppMarketUser
+interface setAppProducts {
+  type: typeof SET_APP_PRODUCTS
+  products: Product[]
+}
+
+interface setAppPagination {
+  type: typeof SET_APP_PAGINATION
+  pagination: Pagination
+}
+
+export type AppActionType = setAppLoading | setAppError | setAppTariff | setAppMarketUser | setAppProducts | setAppPagination

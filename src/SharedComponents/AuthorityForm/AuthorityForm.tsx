@@ -11,6 +11,8 @@ import { AppState } from '../../Redux/interfaces/interfaces'
 import { Config } from '../../Config/Config'
 import axios from 'axios'
 import { withRouter, RouteComponentProps } from 'react-router-dom'
+import LoaderCircle from '../LoaderCircle/LoaderCircle'
+import LoaderHorizontal from '../LoaderHorizontal/LoaderHorizontal'
 
 interface MatchParams {
   id: string
@@ -136,18 +138,7 @@ const AuthorityForm = (props: AuthorityFormProps) => {
   return (
     <Container fluid className="AuthorityForm">
       {formLoader ? (
-        <div className="AuthorityForm__loader d-flex justify-content-center">
-          <div className="lds-roller">
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-          </div>
-        </div>
+        <LoaderCircle />
       ) : (
         <div className="AuthorityForm_card">
           <Form>
@@ -186,14 +177,7 @@ const AuthorityForm = (props: AuthorityFormProps) => {
               </div>
             ) : null}
             {formAdditionalErrors.buttonLoading ? (
-              <div className="AuthorityForm__loader d-flex justify-content-center">
-                <div className="lds-ellipsis">
-                  <div></div>
-                  <div></div>
-                  <div></div>
-                  <div></div>
-                </div>
-              </div>
+              <LoaderHorizontal />
             ) : (
               <Button variant="primary" type="button" size="lg" onClick={handleSubmit((data) => handleClick(data))}>
                 Войти
