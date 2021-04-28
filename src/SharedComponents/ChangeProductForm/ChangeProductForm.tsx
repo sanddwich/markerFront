@@ -7,12 +7,19 @@ import LoaderCircle from '../LoaderCircle/LoaderCircle'
 import NavbarMenuItem from '../NavbarMenuItem/NavbarMenuItem'
 import * as Icon from 'react-bootstrap-icons'
 import './ChangeProductForm.scss'
+import { connect } from 'react-redux'
+import { RootState } from '../../Redux'
+import { setAppProducts } from '../../Redux/actions/app'
+import { AppState } from '../../Redux/interfaces/interfaces'
 
 interface ChangeProductFormProps {
   product: Product
+  app: AppState
+  setAppProducts: (products: Product[]) => void
 }
 
 const ChangeProductForm = (props: ChangeProductFormProps) => {
+  const [product, setProduct] = useState<Product>(props.product)
   const [formLoader, setFormLoader] = useState(false)
   const [productNameInput, setProductNameInput] = useState(props.product.name)
   const [productPriceInput, setProductPriceInput] = useState(props.product.price)
@@ -30,6 +37,18 @@ const ChangeProductForm = (props: ChangeProductFormProps) => {
     setProductDescriptionInput(value)
   }
 
+  const changeProductPrice = (): void => {
+    const products = props.app.products
+    products.map((product) => {
+      if (product.id === props.product.id) {
+        product.price = productPriceInput
+        setProduct(product)
+      }
+      return product
+    })
+    console.log(product.price + '=' + productPriceInput)
+  }
+
   return (
     <Container fluid className="ChangeProductForm">
       {formLoader ? (
@@ -42,13 +61,13 @@ const ChangeProductForm = (props: ChangeProductFormProps) => {
                 controlChangeHandler={productPriceInputHandler}
                 name={'currentPrice'}
                 title="Стоимость:"
-                value={props.product.price}
+                value={product.price}
                 mask="0.00"
                 currency="₽"
               />
 
-              {productPriceInput !== props.product.price && (
-                <div className="ChangeProductForm__nameActions">
+              {productPriceInput !== product.price && (
+                <div className="ChangeProductForm__nameActions" onClick={() => changeProductPrice()}>
                   <ButtonComponent>
                     <NavbarMenuItem title="Применить">
                       <Icon.CheckCircle width={20} height={20} fill={`#212529`} />
@@ -56,7 +75,6 @@ const ChangeProductForm = (props: ChangeProductFormProps) => {
                   </ButtonComponent>
                 </div>
               )}
-
             </Col>
             <Col xs={12} md={6} className="ChangeProductForm__price"></Col>
           </Row>
@@ -66,4 +84,15 @@ const ChangeProductForm = (props: ChangeProductFormProps) => {
   )
 }
 
-export default ChangeProductForm
+const mapDispatchToProps = {
+  setAppProducts,
+}
+
+const mapStateToProps = (state: RootState) => {
+  const app = state.app
+  return {
+    app,
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ChangeProductForm)
