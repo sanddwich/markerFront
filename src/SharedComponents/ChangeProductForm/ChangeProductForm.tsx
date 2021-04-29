@@ -46,7 +46,7 @@ const ChangeProductForm = (props: ChangeProductFormProps) => {
       }
       return product
     })
-    console.log(product.price + '=' + productPriceInput)
+    // console.log(product.price + '=' + productPriceInput)
   }
 
   return (
