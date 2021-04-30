@@ -6,8 +6,8 @@ interface InputNumberFormatProps {
   mask: '0.0' | '0.00' | '0.000' | '0.0000'
   title: string
   value: number
-  name: string
-  currency?: '₽' | '$' | '€' | '£'
+  currency?: string
+  // currency?: '₽' | '$' | '€' | '£'
   controlChangeHandler: (value: string) => void
 }
 

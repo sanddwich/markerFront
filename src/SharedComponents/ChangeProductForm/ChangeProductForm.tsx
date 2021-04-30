@@ -10,82 +10,109 @@ import './ChangeProductForm.scss'
 import { connect } from 'react-redux'
 import { RootState } from '../../Redux'
 import { setAppProducts } from '../../Redux/actions/app'
+import { setErrorToast, setSuccessToast, hideToast } from '../../Redux/actions/toast'
 import { AppState } from '../../Redux/interfaces/interfaces'
+import { Config } from '../../Config/Config'
+import axios from 'axios'
 
 interface ChangeProductFormProps {
   product: Product
   app: AppState
   setAppProducts: (products: Product[]) => void
+  setErrorToast: (message: string) => void
+  setSuccessToast: (message: string) => void
+  hideToast: () => void
 }
 
 const ChangeProductForm = (props: ChangeProductFormProps) => {
-  const [product, setProduct] = useState<Product>(props.product)
-  const [formLoader, setFormLoader] = useState(false)
-  const [productNameInput, setProductNameInput] = useState(props.product.name)
+  const [changePriceLoader, setChangePriceLoader] = useState(false)
   const [productPriceInput, setProductPriceInput] = useState(props.product.price)
-  const [productDescriptionInput, setProductDescriptionInput] = useState(props.product.description)
-
-  const productNameInputHandler = (value: string): void => {
-    setProductNameInput(value)
-  }
 
   const productPriceInputHandler = (value: string): void => {
     setProductPriceInput(parseInt(value))
   }
 
-  const productDescriptionInputHandler = (value: string): void => {
-    setProductDescriptionInput(value)
+  const changeProductPrice = (): void => {
+    if (checkPrice()) {
+      setChangePriceLoader(true)
+
+
+
+      // const api = axios.create({
+      //   baseURL: Config.backConnectData.backendURL,
+      //   withCredentials: true,
+      //   headers: {
+      //     Authorization: `Bearer ${apiToken}`,
+      //   },
+      // })
+
+      const products = props.app.products
+      products.map((product) => {
+        if (product.id === props.product.id) {
+          product.price = productPriceInput
+        }
+        return product
+      })
+      dbChangeProductPrice()
+      // props.setAppProducts(products)
+    }
   }
 
-  const changeProductPrice = (): void => {
-    const products = props.app.products
-    products.map((product) => {
-      if (product.id === props.product.id) {
-        product.price = productPriceInput
-        setProduct(product)
-      }
-      return product
-    })
-    // console.log(product.price + '=' + productPriceInput)
+  const dbChangeProductPrice = async():Promise<any> => {
+
+  }
+
+  const checkPrice = (): boolean => {
+    if (productPriceInput > 0) {
+      return true
+    } else {
+      showHideToast('Цена не может быть равна 0.')
+      return false
+    }
+  }
+
+  const showHideToast = (message: string, error: boolean = true): void => {
+    error ? props.setErrorToast(message) : setSuccessToast(message)
+    setTimeout(() => {
+      props.hideToast()
+    }, Config.messageTimout)
   }
 
   return (
     <Container fluid className="ChangeProductForm">
-      {formLoader ? (
-        <LoaderCircle />
-      ) : (
-        <Container fluid className="ChangeProductForm__container p-0">
-          <Row className="ChangeProductForm__Row">
-            <Col xs={12} md={6} xl={4} className="ChangeProductForm__name p-0">
-              <InputNumberFormat
-                controlChangeHandler={productPriceInputHandler}
-                name={'currentPrice'}
-                title="Стоимость:"
-                value={product.price}
-                mask="0.00"
-                currency="₽"
-              />
+      <Container fluid className="ChangeProductForm__container p-0">
+        <Row className="ChangeProductForm__Row">
+          <Col xs={12} md={6} xl={4} className="ChangeProductForm__name p-0">
+            <InputNumberFormat
+              controlChangeHandler={productPriceInputHandler}
+              title="Стоимость:"
+              value={productPriceInput}
+              mask="0.00"
+              currency="₽"
+            />
 
-              {productPriceInput !== product.price && (
-                <div className="ChangeProductForm__nameActions" onClick={() => changeProductPrice()}>
-                  <ButtonComponent>
-                    <NavbarMenuItem title="Применить">
-                      <Icon.CheckCircle width={20} height={20} fill={`#212529`} />
-                    </NavbarMenuItem>
-                  </ButtonComponent>
-                </div>
-              )}
-            </Col>
-            <Col xs={12} md={6} className="ChangeProductForm__price"></Col>
-          </Row>
-        </Container>
-      )}
+            {productPriceInput !== props.product.price && (
+              <div className="ChangeProductForm__nameActions" onClick={() => changeProductPrice()}>
+                <ButtonComponent>
+                  <NavbarMenuItem title="Применить">
+                    <Icon.CheckCircle width={20} height={20} fill={`#212529`} />
+                  </NavbarMenuItem>
+                </ButtonComponent>
+              </div>
+            )}
+          </Col>
+          <Col xs={12} md={6} className="ChangeProductForm__price"></Col>
+        </Row>
+      </Container>
     </Container>
   )
 }
 
 const mapDispatchToProps = {
   setAppProducts,
+  setErrorToast,
+  setSuccessToast,
+  hideToast,
 }
 
 const mapStateToProps = (state: RootState) => {
