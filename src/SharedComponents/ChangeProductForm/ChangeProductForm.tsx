@@ -48,23 +48,6 @@ const ChangeProductForm = (props: ChangeProductFormProps) => {
         props.setErrorToast('Вы не авторизованы!')
         setChangePriceLoader(false)
       }
-
-      // const api = axios.create({
-      //   baseURL: Config.backConnectData.backendURL,
-      //   withCredentials: true,
-      //   headers: {
-      //     Authorization: `Bearer ${apiToken}`,
-      //   },
-      // })
-
-      // const products = props.app.products
-      // products.map((product) => {
-      //   if (product.id === props.product.id) {
-      //     product.price = productPriceInput
-      //   }
-      //   return product
-      // })
-      // dbChangeProductPrice()
     }
   }
 
@@ -75,18 +58,6 @@ const ChangeProductForm = (props: ChangeProductFormProps) => {
   ): Promise<any> => {
     const productOperation = Config.productOperations.find((po) => po.productMethod === productMethod)
     if (productOperation) {
-      // const api = axios.create({
-      //   baseURL: Config.backConnectData.backendURL,
-      //   withCredentials: true,
-      //   headers: {
-      //     Authorization: `Bearer ${apiToken}`,
-      //   },
-      // })
-
-      // await api.post('/api/admin/product/changePrice', changeProduct).then((response) => {
-      //   console.log(response)
-      // })
-
       await axios({
         method: productOperation.httpMethod,
         url: Config.backConnectData.backendURL + productOperation.apiLink,
