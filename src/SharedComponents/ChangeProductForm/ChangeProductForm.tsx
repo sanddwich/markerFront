@@ -75,43 +75,31 @@ const ChangeProductForm = (props: ChangeProductFormProps) => {
   ): Promise<any> => {
     const productOperation = Config.productOperations.find((po) => po.productMethod === productMethod)
     if (productOperation) {
-      const api = axios.create({
-        baseURL: Config.backConnectData.backendURL,
-        withCredentials: true,
-        headers: {
-          Authorization: `Bearer ${apiToken}`,
-        },
-      })
-
-
-      const res = await fetch('http://laravel:8000/api/admin', {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${apiToken}`,
-        }
-      })
-
-      console.log(res)
-
-      // console.log(apiToken)
-
-      // await api.post('/api/admin').then((response) => {
-      //   console.log(response)
-      // })
-
-      // await axios({
-      //   method: productOperation.httpMethod,
-      //   url: Config.backConnectData.backendURL + productOperation.apiLink,
+      // const api = axios.create({
+      //   baseURL: Config.backConnectData.backendURL,
       //   withCredentials: true,
       //   headers: {
       //     Authorization: `Bearer ${apiToken}`,
       //   },
-      //   data: {
-      //     changeProduct,
-      //   },
-      // }).then((response) => {
+      // })
+
+      // await api.post('/api/admin/product/changePrice', changeProduct).then((response) => {
       //   console.log(response)
       // })
+
+      await axios({
+        method: productOperation.httpMethod,
+        url: Config.backConnectData.backendURL + productOperation.apiLink,
+        withCredentials: true,
+        headers: {
+          Authorization: `Bearer ${apiToken}`,
+        },
+        data: {
+          product: changeProduct,
+        },
+      }).then((response) => {
+        console.log(response.data)
+      })
     }
     setChangePriceLoader(false)
   }
