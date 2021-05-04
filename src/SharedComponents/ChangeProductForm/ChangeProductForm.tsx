@@ -14,6 +14,7 @@ import { setErrorToast, setSuccessToast, hideToast } from '../../Redux/actions/t
 import { AppState } from '../../Redux/interfaces/interfaces'
 import { Config } from '../../Config/Config'
 import axios from 'axios'
+import ProductMethod from '../../Redux/interfaces/AdditionalInterfaces/ProductMethod'
 
 interface ChangeProductFormProps {
   product: Product
@@ -35,8 +36,18 @@ const ChangeProductForm = (props: ChangeProductFormProps) => {
   const changeProductPrice = (): void => {
     if (checkPrice()) {
       setChangePriceLoader(true)
-
-
+      //Создание переменной Product с актуальными значениями
+      const changeProduct: Product = props.product
+      changeProduct.price = productPriceInput
+      //Получение Token для авторизации
+      const marketUser = localStorage.getItem('marketUser')
+      if (marketUser) {
+        const apiToken = JSON.parse(marketUser).apiToken
+        dbChangeProduct(changeProduct, apiToken, 'CHANGE_PRODUCT_PRICE')
+      } else {
+        props.setErrorToast('Вы не авторизованы!')
+        setChangePriceLoader(false)
+      }
 
       // const api = axios.create({
       //   baseURL: Config.backConnectData.backendURL,
@@ -46,27 +57,70 @@ const ChangeProductForm = (props: ChangeProductFormProps) => {
       //   },
       // })
 
-      const products = props.app.products
-      products.map((product) => {
-        if (product.id === props.product.id) {
-          product.price = productPriceInput
-        }
-        return product
-      })
-      dbChangeProductPrice()
-      // props.setAppProducts(products)
+      // const products = props.app.products
+      // products.map((product) => {
+      //   if (product.id === props.product.id) {
+      //     product.price = productPriceInput
+      //   }
+      //   return product
+      // })
+      // dbChangeProductPrice()
     }
   }
 
-  const dbChangeProductPrice = async():Promise<any> => {
+  const dbChangeProduct = async (
+    changeProduct: Product,
+    apiToken: string,
+    productMethod: ProductMethod
+  ): Promise<any> => {
+    const productOperation = Config.productOperations.find((po) => po.productMethod === productMethod)
+    if (productOperation) {
+      const api = axios.create({
+        baseURL: Config.backConnectData.backendURL,
+        withCredentials: true,
+        headers: {
+          Authorization: `Bearer ${apiToken}`,
+        },
+      })
 
+
+      const res = await fetch('http://laravel:8000/api/admin', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${apiToken}`,
+        }
+      })
+
+      console.log(res)
+
+      // console.log(apiToken)
+
+      // await api.post('/api/admin').then((response) => {
+      //   console.log(response)
+      // })
+
+      // await axios({
+      //   method: productOperation.httpMethod,
+      //   url: Config.backConnectData.backendURL + productOperation.apiLink,
+      //   withCredentials: true,
+      //   headers: {
+      //     Authorization: `Bearer ${apiToken}`,
+      //   },
+      //   data: {
+      //     changeProduct,
+      //   },
+      // }).then((response) => {
+      //   console.log(response)
+      // })
+    }
+    setChangePriceLoader(false)
   }
 
   const checkPrice = (): boolean => {
     if (productPriceInput > 0) {
       return true
     } else {
-      showHideToast('Цена не может быть равна 0.')
+      showHideToast('Неправильно установлена цена.')
       return false
     }
   }
