@@ -36,6 +36,7 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.1",
     "react-scroll": "^1.8.1",
+    "react-select-search": "^3.0.7",
     "react-snap": "^1.23.0",
     "redux": "^4.0.5",
     "redux-devtools-extension": "^2.13.8",

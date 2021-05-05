@@ -18,6 +18,8 @@ import ProductMethod from '../../Redux/interfaces/AdditionalInterfaces/ProductMe
 import LoaderHorizontal from '../LoaderHorizontal/LoaderHorizontal'
 import InputString from '../InputString/InputString'
 import InputTextArea from '../InputTextArea/InputTextArea'
+import SelectSearch, { fuzzySearch } from 'react-select-search'
+import ProductCategory from '../../Redux/interfaces/AdditionalInterfaces/ProductCategory'
 
 interface ChangeProductFormProps {
   product: Product
@@ -37,6 +39,9 @@ const ChangeProductForm = (props: ChangeProductFormProps) => {
   const [productDescInput, setProductDescInput] = useState(props.product.description)
   const [changeProductCategoryLoader, setChangeProductCategoryLoader] = useState(false)
   const [productCategoryInput, setProductCategoryInput] = useState(props.product.category_id)
+  const [selectOptions, setSelectOptions] = useState([
+    { value: props.product.category_id, name: props.product.product_category.name },
+  ])
 
   const productPriceInputHandler = (value: string): void => {
     setProductPriceInput(parseInt(value))
@@ -199,6 +204,33 @@ const ChangeProductForm = (props: ChangeProductFormProps) => {
     }, Config.messageTimout)
   }
 
+  const getProductCategories = async (partName: string): Promise<any> => {
+    const api = axios.create({
+      baseURL: Config.backConnectData.backendURL,
+      withCredentials: true,
+      headers: {
+        Authorization: `Bearer ${props.app.marketUser?.apiToken}`,
+      },
+    })
+
+    return await api
+      .get('/api/categories', {
+        params: {
+          partName,
+        },
+      })
+      .then((res) => {
+        console.log(res.data)
+        const productCategories: ProductCategory[] = res.data.productCategories
+        return productCategories.map((cat) => {
+          return { value: cat.id, name: cat.name }
+        })
+        // return res.data.map((cat) => {
+        //   return {value: cat.id, name: cat.name}
+        // })
+      })
+  }
+
   return (
     <Container fluid className="ChangeProductForm">
       <Container fluid className="ChangeProductForm__container p-0">
@@ -206,11 +238,15 @@ const ChangeProductForm = (props: ChangeProductFormProps) => {
           {/* Поле КАТЕГОРИЯ товара */}
           <Col xs={12} md={6} xl={4} className="ChangeProductForm__cont">
             <div className="ChangeProductForm__productCategory">
-              <InputString
-                controlChangeHandler={productCategoryInputHandler}
-                title="Категория:"
-                value={productCategoryInput.toString()}
-                type="text"
+              <SelectSearch
+                options={[]}
+                getOptions={(query) => {
+                  return getProductCategories(query)
+                }}
+                // filterOptions={fuzzySearch}
+                // printOptions="always"
+                emptyMessage="Not found"
+                search={true}
               />
 
               {changeProductCategoryLoader && <LoaderHorizontal />}
@@ -296,9 +332,7 @@ const ChangeProductForm = (props: ChangeProductFormProps) => {
             </div>
           </Col>
         </Row>
-        <Row>
-          
-        </Row>
+        <Row></Row>
       </Container>
     </Container>
   )
