@@ -19,8 +19,6 @@ import LoaderHorizontal from '../LoaderHorizontal/LoaderHorizontal'
 import InputString from '../InputString/InputString'
 import InputTextArea from '../InputTextArea/InputTextArea'
 
-import SelectSearch from 'react-select-search';
-
 interface ChangeProductFormProps {
   product: Product
   app: AppState
@@ -201,16 +199,6 @@ const ChangeProductForm = (props: ChangeProductFormProps) => {
     }, Config.messageTimout)
   }
 
-  const options = [
-    { name: 'Swedish', value: 'sv' },
-    { name: 'English', value: 'en' },
-    {
-      type: 'group',
-      name: 'Group name',
-      items: [{ name: 'Spanish', value: 'es' }],
-    },
-  ]
-
   return (
     <Container fluid className="ChangeProductForm">
       <Container fluid className="ChangeProductForm__container p-0">
@@ -309,7 +297,7 @@ const ChangeProductForm = (props: ChangeProductFormProps) => {
           </Col>
         </Row>
         <Row>
-          <SelectSearch options={options} value="sv" name="language" placeholder="Choose your language" />
+          
         </Row>
       </Container>
     </Container>
