@@ -1,0 +1,25 @@
+.InputTextArea {
+  padding: 0px;
+ 
+  .form-label {
+    font-size: 26px;
+    font-weight: 600;
+  }
+
+  .form-control {
+    font-size: 22px;
+    font-weight: 500;
+    border-radius: 0;
+    border-color: #212529;
+  }
+
+  @media screen and(max-width: 576px) {
+    .form-label {
+      font-size: 20px;
+    }
+  
+    .form-control {
+      font-size: 16px;
+    }
+  }
+}

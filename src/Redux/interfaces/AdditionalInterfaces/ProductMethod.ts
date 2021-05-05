@@ -1,7 +1,5 @@
-type ProductMethod = 'CHANGE_PRODUCT_PRICE' 
-| 'CHANGE_PRODUCT_NAME' 
-| 'CHANGE_PRODUCT_DESCRIPTION'
-| 'CHANGE_PRODUCT_CATEGORY'
-| 'CHANGE_PRODUCT_PROPERTY'
+type ProductMethod = 
+| 'CHANGE_PRODUCT'
+| 'ADD_PRODUCT'
 
 export default ProductMethod

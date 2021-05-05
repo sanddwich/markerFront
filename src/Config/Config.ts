@@ -13,7 +13,8 @@ export const Config: ConfigInterface = {
     backendURL: 'http://laravel:8000',
   },
   productOperations: [
-    {httpMethod: 'POST', productMethod: 'CHANGE_PRODUCT_PRICE', apiLink: '/api/admin/product/changePrice'},
+    {httpMethod: 'POST', productMethod: 'CHANGE_PRODUCT', apiLink: '/api/admin/product/create-update'},
+    // {httpMethod: 'POST', productMethod: 'ADD_PRODUCT', apiLink: '/api/admin/product/changePrice'},
   ],
   messageTimout: 5000,
 }

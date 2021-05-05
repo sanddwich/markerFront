@@ -1,6 +1,10 @@
 .ChangeProductForm {
   padding: 0;
 
+  .ChangeProductForm__cont {
+    padding: 10px;
+  }
+
   .ChangeProductForm__loader {
     margin-top: -100px;
     .lds-roller {
