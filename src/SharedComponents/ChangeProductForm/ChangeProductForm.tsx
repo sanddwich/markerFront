@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Col, Container, Row } from 'react-bootstrap'
 import Product from '../../Redux/interfaces/AdditionalInterfaces/Product'
 import ButtonComponent from '../ButtonComponent/ButtonComponent'
@@ -9,7 +9,7 @@ import * as Icon from 'react-bootstrap-icons'
 import './ChangeProductForm.scss'
 import { connect } from 'react-redux'
 import { RootState } from '../../Redux'
-import { setAppProducts } from '../../Redux/actions/app'
+import { setAppProducts, setAppProductCategories } from '../../Redux/actions/app'
 import { setErrorToast, setSuccessToast, hideToast } from '../../Redux/actions/toast'
 import { AppState } from '../../Redux/interfaces/interfaces'
 import { Config } from '../../Config/Config'
@@ -18,19 +18,22 @@ import ProductMethod from '../../Redux/interfaces/AdditionalInterfaces/ProductMe
 import LoaderHorizontal from '../LoaderHorizontal/LoaderHorizontal'
 import InputString from '../InputString/InputString'
 import InputTextArea from '../InputTextArea/InputTextArea'
-import SelectSearch, { fuzzySearch } from 'react-select-search'
+import SelectSearch, { fuzzySearch, SelectSearchOption } from 'react-select-search'
 import ProductCategory from '../../Redux/interfaces/AdditionalInterfaces/ProductCategory'
+import SelectSearchComponent from '../SelectSearchComponent/SelectSearchComponent'
 
 interface ChangeProductFormProps {
   product: Product
   app: AppState
   setAppProducts: (products: Product[]) => void
+  setAppProductCategories: (productCategories: ProductCategory[]) => void
   setErrorToast: (message: string) => void
   setSuccessToast: (message: string) => void
   hideToast: () => void
 }
 
 const ChangeProductForm = (props: ChangeProductFormProps) => {
+  const [formLoader, setFormLoader] = useState(true)
   const [changePriceLoader, setChangePriceLoader] = useState(false)
   const [productPriceInput, setProductPriceInput] = useState(props.product.price)
   const [changeNameLoader, setChangeNameLoader] = useState(false)
@@ -39,9 +42,10 @@ const ChangeProductForm = (props: ChangeProductFormProps) => {
   const [productDescInput, setProductDescInput] = useState(props.product.description)
   const [changeProductCategoryLoader, setChangeProductCategoryLoader] = useState(false)
   const [productCategoryInput, setProductCategoryInput] = useState(props.product.category_id)
-  const [selectOptions, setSelectOptions] = useState([
-    { value: props.product.category_id, name: props.product.product_category.name },
-  ])
+
+  useEffect(() => {
+    getProductCategories()
+  }, [])
 
   const productPriceInputHandler = (value: string): void => {
     setProductPriceInput(parseInt(value))
@@ -64,15 +68,11 @@ const ChangeProductForm = (props: ChangeProductFormProps) => {
       setChangePriceLoader(true)
       //Создание переменной Product с актуальными значениями
       const changeProduct: Product = props.product
-      changeProduct.category_id = productCategoryInput
+      changeProduct.price = productPriceInput
       //Получение Token для авторизации
-      const marketUser = localStorage.getItem('marketUser')
-      if (marketUser) {
-        const apiToken = JSON.parse(marketUser).apiToken
-        await dbProductAction(changeProduct, apiToken, 'CHANGE_PRODUCT')
-      } else {
-        props.setErrorToast('Вы не авторизованы!')
-      }
+      const apiToken = props.app.marketUser?.apiToken
+      apiToken && (await dbProductAction(changeProduct, apiToken, 'CHANGE_PRODUCT'))
+
       setChangePriceLoader(false)
     }
   }
@@ -84,13 +84,10 @@ const ChangeProductForm = (props: ChangeProductFormProps) => {
       const changeProduct: Product = props.product
       changeProduct.name = productNameInput.trim()
       //Получение Token для авторизации
-      const marketUser = localStorage.getItem('marketUser')
-      if (marketUser) {
-        const apiToken = JSON.parse(marketUser).apiToken
-        await dbProductAction(changeProduct, apiToken, 'CHANGE_PRODUCT')
-      } else {
-        props.setErrorToast('Вы не авторизованы!')
-      }
+      //Получение Token для авторизации
+      const apiToken = props.app.marketUser?.apiToken
+      apiToken && (await dbProductAction(changeProduct, apiToken, 'CHANGE_PRODUCT'))
+
       setChangeNameLoader(false)
     }
   }
@@ -102,13 +99,9 @@ const ChangeProductForm = (props: ChangeProductFormProps) => {
       const changeProduct: Product = props.product
       changeProduct.description = productDescInput.trim()
       //Получение Token для авторизации
-      const marketUser = localStorage.getItem('marketUser')
-      if (marketUser) {
-        const apiToken = JSON.parse(marketUser).apiToken
-        await dbProductAction(changeProduct, apiToken, 'CHANGE_PRODUCT')
-      } else {
-        props.setErrorToast('Вы не авторизованы!')
-      }
+      const apiToken = props.app.marketUser?.apiToken
+      apiToken && (await dbProductAction(changeProduct, apiToken, 'CHANGE_PRODUCT'))
+
       setChangeDescLoader(false)
     }
   }
@@ -117,15 +110,10 @@ const ChangeProductForm = (props: ChangeProductFormProps) => {
     setChangeProductCategoryLoader(true)
     //Создание переменной Product с актуальными значениями
     const changeProduct: Product = props.product
-    changeProduct.price = productPriceInput
+    changeProduct.category_id = productCategoryInput
     //Получение Token для авторизации
-    const marketUser = localStorage.getItem('marketUser')
-    if (marketUser) {
-      const apiToken = JSON.parse(marketUser).apiToken
-      await dbProductAction(changeProduct, apiToken, 'CHANGE_PRODUCT')
-    } else {
-      props.setErrorToast('Вы не авторизованы!')
-    }
+    const apiToken = props.app.marketUser?.apiToken
+    apiToken && (await dbProductAction(changeProduct, apiToken, 'CHANGE_PRODUCT'))
     setChangeProductCategoryLoader(false)
   }
 
@@ -192,7 +180,7 @@ const ChangeProductForm = (props: ChangeProductFormProps) => {
         })
         .catch((error) => {
           console.log(error)
-          showHideToast('Ошибка сервера!')
+          showHideToast('Ошибка обращения к API создания/модификации продукта!')
         })
     }
   }
@@ -204,7 +192,7 @@ const ChangeProductForm = (props: ChangeProductFormProps) => {
     }, Config.messageTimout)
   }
 
-  const getProductCategories = async (partName: string): Promise<any> => {
+  const getProductCategories = async (): Promise<any> => {
     const api = axios.create({
       baseURL: Config.backConnectData.backendURL,
       withCredentials: true,
@@ -214,132 +202,146 @@ const ChangeProductForm = (props: ChangeProductFormProps) => {
     })
 
     return await api
-      .get('/api/categories', {
-        params: {
-          partName,
-        },
-      })
+      .get('/api/categories')
       .then((res) => {
-        console.log(res.data)
-        const productCategories: ProductCategory[] = res.data.productCategories
-        return productCategories.map((cat) => {
-          return { value: cat.id, name: cat.name }
-        })
-        // return res.data.map((cat) => {
-        //   return {value: cat.id, name: cat.name}
-        // })
+        // console.log(res)
+        if ((res.status = 200)) {
+          const productCategories: ProductCategory[] = res.data.productCategories
+          props.setAppProductCategories(productCategories)
+          setFormLoader(false)
+        } else {
+          showHideToast('Ошибка получения категорий!')
+        }
       })
+      .catch((error) => {
+        console.log(error)
+        showHideToast('Ошибка обращения к API получения категорий!')
+      })
+  }
+
+  const getSelectSearchOptionsForProductCategories = (): SelectSearchOption[] => {
+    return props.app.productCategories.map((cat) => {
+      return {
+        name: cat.name,
+        value: cat.id,
+        photo: cat.images[0] ? cat.images[0].path : `https://picsum.photos/100/100?random=${cat.id}`,
+        // photo: `https://picsum.photos/100/100?random=${cat.id}`,
+      }
+    })
   }
 
   return (
     <Container fluid className="ChangeProductForm">
-      <Container fluid className="ChangeProductForm__container p-0">
-        <Row className="ChangeProductForm__Row">
-          {/* Поле КАТЕГОРИЯ товара */}
-          <Col xs={12} md={6} xl={4} className="ChangeProductForm__cont">
-            <div className="ChangeProductForm__productCategory">
-              <SelectSearch
-                options={[]}
-                getOptions={(query) => {
-                  return getProductCategories(query)
-                }}
-                // filterOptions={fuzzySearch}
-                // printOptions="always"
-                emptyMessage="Not found"
-                search={true}
-              />
+      {formLoader ? (
+        <LoaderCircle />
+      ) : (
+        <Container fluid className="ChangeProductForm__container p-0">
+          <Row className="ChangeProductForm__Row">
+            {/* Поле КАТЕГОРИЯ товара */}
+            <Col xs={12} md={6} xl={4} className="ChangeProductForm__cont">
+              <div className="ChangeProductForm__productCategory">
+                <SelectSearchComponent
+                  options={getSelectSearchOptionsForProductCategories()}
+                  title="Категория:"
+                  controlChangeHandler={productCategoryInputHandler}
+                  value={props.product.category_id.toString()}
+                />
 
-              {changeProductCategoryLoader && <LoaderHorizontal />}
+                {changeProductCategoryLoader && <LoaderHorizontal />}
 
-              {productCategoryInput !== props.product.category_id && (
-                <div className="ChangeProductForm__nameActions" onClick={() => changeProductCategory()}>
-                  <ButtonComponent>
-                    <NavbarMenuItem title="Применить">
-                      <Icon.CheckCircle width={20} height={20} fill={`#212529`} />
-                    </NavbarMenuItem>
-                  </ButtonComponent>
-                </div>
-              )}
-            </div>
-          </Col>
-          {/* Поле НАИМЕНОВАНИЕ товара */}
-          <Col xs={12} md={6} xl={4} className="ChangeProductForm__cont">
-            <div className="ChangeProductForm__name">
-              <InputString
-                controlChangeHandler={productNameInputHandler}
-                title="Наименование:"
-                value={productNameInput}
-                type="text"
-              />
+                {productCategoryInput !== props.product.category_id && (
+                  <div className="ChangeProductForm__nameActions" onClick={() => changeProductCategory()}>
+                    <ButtonComponent>
+                      <NavbarMenuItem title="Применить">
+                        <Icon.CheckCircle width={20} height={20} fill={`#212529`} />
+                      </NavbarMenuItem>
+                    </ButtonComponent>
+                  </div>
+                )}
+              </div>
+            </Col>
+            {/* Поле НАИМЕНОВАНИЕ товара */}
+            <Col xs={12} md={6} xl={4} className="ChangeProductForm__cont">
+              <div className="ChangeProductForm__name">
+                <InputString
+                  controlChangeHandler={productNameInputHandler}
+                  title="Наименование:"
+                  value={productNameInput}
+                  type="text"
+                />
 
-              {changeNameLoader && <LoaderHorizontal />}
+                {changeNameLoader && <LoaderHorizontal />}
 
-              {productNameInput !== props.product.name && (
-                <div className="ChangeProductForm__nameActions" onClick={() => changeProductName()}>
-                  <ButtonComponent>
-                    <NavbarMenuItem title="Применить">
-                      <Icon.CheckCircle width={20} height={20} fill={`#212529`} />
-                    </NavbarMenuItem>
-                  </ButtonComponent>
-                </div>
-              )}
-            </div>
-          </Col>
-          {/* Поле ЦЕНА товара */}
-          <Col xs={12} md={6} xl={4} className="ChangeProductForm__cont">
-            <div className="ChangeProductForm__price">
-              <InputNumberFormat
-                controlChangeHandler={productPriceInputHandler}
-                title="Стоимость:"
-                value={productPriceInput}
-                mask="0.00"
-                currency="₽"
-              />
+                {productNameInput !== props.product.name && (
+                  <div className="ChangeProductForm__nameActions" onClick={() => changeProductName()}>
+                    <ButtonComponent>
+                      <NavbarMenuItem title="Применить">
+                        <Icon.CheckCircle width={20} height={20} fill={`#212529`} />
+                      </NavbarMenuItem>
+                    </ButtonComponent>
+                  </div>
+                )}
+              </div>
+            </Col>
+            {/* Поле ЦЕНА товара */}
+            <Col xs={12} md={6} xl={4} className="ChangeProductForm__cont">
+              <div className="ChangeProductForm__price">
+                <InputNumberFormat
+                  controlChangeHandler={productPriceInputHandler}
+                  title="Стоимость:"
+                  value={productPriceInput}
+                  mask="0.00"
+                  currency="₽"
+                />
 
-              {changePriceLoader && <LoaderHorizontal />}
+                {changePriceLoader && <LoaderHorizontal />}
 
-              {productPriceInput !== props.product.price && (
-                <div className="ChangeProductForm__nameActions" onClick={() => changeProductPrice()}>
-                  <ButtonComponent>
-                    <NavbarMenuItem title="Применить">
-                      <Icon.CheckCircle width={20} height={20} fill={`#212529`} />
-                    </NavbarMenuItem>
-                  </ButtonComponent>
-                </div>
-              )}
-            </div>
-          </Col>
-          {/* Поле ОПИСАНИЕ товара */}
-          <Col xs={12} md={6} xl={4} className="ChangeProductForm__cont">
-            <div className="ChangeProductForm__desc">
-              <InputTextArea
-                controlChangeHandler={productDescInputHandler}
-                title="Описание:"
-                value={productDescInput}
-              />
+                {productPriceInput !== props.product.price && (
+                  <div className="ChangeProductForm__nameActions" onClick={() => changeProductPrice()}>
+                    <ButtonComponent>
+                      <NavbarMenuItem title="Применить">
+                        <Icon.CheckCircle width={20} height={20} fill={`#212529`} />
+                      </NavbarMenuItem>
+                    </ButtonComponent>
+                  </div>
+                )}
+              </div>
+            </Col>
+            {/* Поле ОПИСАНИЕ товара */}
+            <Col xs={12} md={6} xl={4} className="ChangeProductForm__cont">
+              <div className="ChangeProductForm__desc">
+                <InputTextArea
+                  controlChangeHandler={productDescInputHandler}
+                  title="Описание:"
+                  value={productDescInput}
+                />
 
-              {changeDescLoader && <LoaderHorizontal />}
+                {changeDescLoader && <LoaderHorizontal />}
 
-              {productDescInput !== props.product.description && (
-                <div className="ChangeProductForm__nameActions" onClick={() => changeProductDesc()}>
-                  <ButtonComponent>
-                    <NavbarMenuItem title="Применить">
-                      <Icon.CheckCircle width={20} height={20} fill={`#212529`} />
-                    </NavbarMenuItem>
-                  </ButtonComponent>
-                </div>
-              )}
-            </div>
-          </Col>
-        </Row>
-        <Row></Row>
-      </Container>
+                {productDescInput !== props.product.description && (
+                  <div className="ChangeProductForm__nameActions" onClick={() => changeProductDesc()}>
+                    <ButtonComponent>
+                      <NavbarMenuItem title="Применить">
+                        <Icon.CheckCircle width={20} height={20} fill={`#212529`} />
+                      </NavbarMenuItem>
+                    </ButtonComponent>
+                  </div>
+                )}
+              </div>
+            </Col>
+          </Row>
+          <Row>
+            
+          </Row>
+        </Container>
+      )}
     </Container>
   )
 }
 
 const mapDispatchToProps = {
   setAppProducts,
+  setAppProductCategories,
   setErrorToast,
   setSuccessToast,
   hideToast,

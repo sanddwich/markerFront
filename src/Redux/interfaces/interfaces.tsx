@@ -1,6 +1,7 @@
 import { MarketUser } from "./AdditionalInterfaces/MarketUser";
 import Pagination from "./AdditionalInterfaces/Pagination";
 import Product from "./AdditionalInterfaces/Product";
+import ProductCategory from "./AdditionalInterfaces/ProductCategory";
 
 export interface AppState {
   loading: boolean
@@ -8,6 +9,7 @@ export interface AppState {
   tariff: string
   marketUser: MarketUser | null
   products: Product[]
+  productCategories: ProductCategory[]
   pagination: Pagination
 }
 

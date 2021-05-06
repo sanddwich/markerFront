@@ -59,10 +59,8 @@ const ProductCard = (props: ProductCardProps) => {
   return (
     <Container fluid className="ProductCard p-0">
       {modalWindow && (
-        <ModalWindow
-          closeHandler={closeFormHandler}
-          title="Изменение продукта">
-            <ChangeProductForm product={props.product} />
+        <ModalWindow closeHandler={closeFormHandler} title="Изменение продукта">
+          <ChangeProductForm product={props.product} />
         </ModalWindow>
       )}
 
@@ -93,10 +91,12 @@ const ProductCard = (props: ProductCardProps) => {
           {descShow && <div className="ProductCard__descriptionCont">{props.product.description}</div>}
         </Row>
 
-        <Row className="ProductCard__props m-0" onClick={() => toggleImgShow()}>
-          <NavbarMenuItem title={`Картинки (${props.product.images.length})`}>
-            <Icon.LayerBackward width={15} height={15} fill={`#212529`} />
-          </NavbarMenuItem>
+        <Row className="ProductCard__props m-0">
+          <div className="ProductCard__descriptionTitle" onClick={() => toggleImgShow()}>
+            <NavbarMenuItem title={`Картинки (${props.product.images.length})`}>
+              <Icon.LayerBackward width={15} height={15} fill={`#212529`} />
+            </NavbarMenuItem>
+          </div>
           {imgShow && props.product.images.length > 0 && <ImgSlider images={props.product.images} slideWidth={100} />}
         </Row>
 

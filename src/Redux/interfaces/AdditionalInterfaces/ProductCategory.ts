@@ -5,8 +5,7 @@ export default interface ProductCategory {
   description: string
   hidden: boolean
   id: number
-  image: Image
-  image_id: number
+  images: Image[]
   name: string
   parent_id: number
   updated_at: string
