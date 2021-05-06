@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Col, Container, Row } from 'react-bootstrap'
+import { Col, Container, Form, Row } from 'react-bootstrap'
 import Product from '../../Redux/interfaces/AdditionalInterfaces/Product'
 import ButtonComponent from '../ButtonComponent/ButtonComponent'
 import InputNumberFormat from '../InputNumberFormat/InputNumberFormat'
@@ -21,6 +21,7 @@ import InputTextArea from '../InputTextArea/InputTextArea'
 import SelectSearch, { fuzzySearch, SelectSearchOption } from 'react-select-search'
 import ProductCategory from '../../Redux/interfaces/AdditionalInterfaces/ProductCategory'
 import SelectSearchComponent from '../SelectSearchComponent/SelectSearchComponent'
+import UploadFileCard from '../UploadFileCard/UploadFileCard'
 
 interface ChangeProductFormProps {
   product: Product
@@ -42,6 +43,8 @@ const ChangeProductForm = (props: ChangeProductFormProps) => {
   const [productDescInput, setProductDescInput] = useState(props.product.description)
   const [changeProductCategoryLoader, setChangeProductCategoryLoader] = useState(false)
   const [productCategoryInput, setProductCategoryInput] = useState(props.product.category_id)
+  const [uploadImages, setUploadImages] = useState<Array<File>>([])
+  const [uploadImagesLoader, setUploadImagesLoader] = useState(false)
 
   useEffect(() => {
     getProductCategories()
@@ -230,6 +233,26 @@ const ChangeProductForm = (props: ChangeProductFormProps) => {
     })
   }
 
+
+
+  const inputFilesHandler = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    const fileList: FileList | null = event.target.files
+    if (fileList !== null && fileList?.length > 0) {
+      const filesArray: File[] = []
+      for (let i = 0; i < fileList.length; i++) {
+        if (fileList.item(i) !== null) {
+          filesArray.push()
+        }
+      }
+
+      setUploadImages(filesArray)
+    }
+  }
+
+  const deleteFileCard = ():void => {
+    console.log('deleteFileCard')
+  }
+
   return (
     <Container fluid className="ChangeProductForm">
       {formLoader ? (
@@ -331,7 +354,43 @@ const ChangeProductForm = (props: ChangeProductFormProps) => {
             </Col>
           </Row>
           <Row>
-            
+            <Col className="ChangeProductForm__cont">
+              <Form.Label>Загрузка файла:</Form.Label>
+              <Form.File
+                id="custom-file-translate-scss"
+                label="Выберете файлы..."
+                data-browse="Обзор"
+                accept={Config.upload.images.accept}
+                size={Config.upload.images.maxSize}
+                multiple
+                custom
+                onChange={inputFilesHandler}
+              />
+
+              {uploadImagesLoader && <LoaderHorizontal />}
+
+              {uploadImages !== [] && (
+                <div className="ChangeProductForm__nameActions" onClick={() => changeProductPrice()}>
+                  <Container fluid className="ChangeProductForm__fileList p-0">
+                    <Row className="m-0">
+                      {uploadImages.map(uploadImage => {
+                        return (
+                          <Col className="ChangeProductForm__fileListEl p-1">
+                            <UploadFileCard file={uploadImage} deleteHandler={deleteFileCard} />
+                          </Col>
+                        )
+                      })}
+                    </Row>
+                  </Container>
+
+                  <ButtonComponent>
+                    <NavbarMenuItem title="Загрузить картинки">
+                      <Icon.CheckCircle width={20} height={20} fill={`#212529`} />
+                    </NavbarMenuItem>
+                  </ButtonComponent>
+                </div>
+              )}
+            </Col>
           </Row>
         </Container>
       )}
