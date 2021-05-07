@@ -233,23 +233,23 @@ const ChangeProductForm = (props: ChangeProductFormProps) => {
     })
   }
 
-
+  const addProductImages = (): void => {}
 
   const inputFilesHandler = (event: React.ChangeEvent<HTMLInputElement>): void => {
     const fileList: FileList | null = event.target.files
     if (fileList !== null && fileList?.length > 0) {
-      const filesArray: File[] = []
+      const filesArray: File[] = uploadImages
       for (let i = 0; i < fileList.length; i++) {
-        if (fileList.item(i) !== null) {
-          filesArray.push()
+        const file = fileList.item(i) as File
+        if (filesArray.find(f => f.name === file.name)) {
+          console.log(file.name)
         }
       }
-
       setUploadImages(filesArray)
     }
   }
 
-  const deleteFileCard = ():void => {
+  const deleteFileCard = (): void => {
     console.log('deleteFileCard')
   }
 
@@ -369,26 +369,27 @@ const ChangeProductForm = (props: ChangeProductFormProps) => {
 
               {uploadImagesLoader && <LoaderHorizontal />}
 
-              {uploadImages !== [] && (
-                <div className="ChangeProductForm__nameActions" onClick={() => changeProductPrice()}>
-                  <Container fluid className="ChangeProductForm__fileList p-0">
+              {uploadImages.length > 0 && (
+                <React.Fragment>
+                  <Container fluid className="ChangeProductForm__fileList">
                     <Row className="m-0">
-                      {uploadImages.map(uploadImage => {
+                      {uploadImages.map((uploadImage, index) => {
                         return (
-                          <Col className="ChangeProductForm__fileListEl p-1">
+                          <Col xl={3} lg={4} md={6} sm={12} key={index} className="ChangeProductForm__fileListEl p-0">
                             <UploadFileCard file={uploadImage} deleteHandler={deleteFileCard} />
                           </Col>
                         )
                       })}
                     </Row>
                   </Container>
-
-                  <ButtonComponent>
-                    <NavbarMenuItem title="Загрузить картинки">
-                      <Icon.CheckCircle width={20} height={20} fill={`#212529`} />
-                    </NavbarMenuItem>
-                  </ButtonComponent>
-                </div>
+                  <div className="ChangeProductForm__nameActions" onClick={() => addProductImages()}>
+                    <ButtonComponent>
+                      <NavbarMenuItem title="Загрузить картинки">
+                        <Icon.CheckCircle width={20} height={20} fill={`#212529`} />
+                      </NavbarMenuItem>
+                    </ButtonComponent>
+                  </div>
+                </React.Fragment>
               )}
             </Col>
           </Row>

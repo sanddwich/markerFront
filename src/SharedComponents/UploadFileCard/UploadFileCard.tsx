@@ -14,13 +14,13 @@ const UploadFileCard = (props: UploadFileCardProps) => {
   }
 
   return (
-    <Container fluid className="UploadFileCard p-0">
-      <Row className="UploadFileCard__Row m-0">
-        <Col xs={10} className="UploadFileCard__Col p-0">
-          Файл: <strong>{props.file.name}</strong> ({getMb(props.file.size)} Mb)
+    <Container fluid className="UploadFileCard">
+      <Row className="UploadFileCard__content m-0">
+        <Col xs={10} className="UploadFileCard__Col p-0 d-flex align-items-center">
+          Файл:<strong>{props.file.name}</strong> ({getMb(props.file.size)} Mb)
         </Col>
-        <Col xs={2} className="UploadFileCard__Col p-0 d-flex justify-content-center align-items-center">
-          <Icon.XCircleFill width={25} height={25} fill={`#a70000`} />
+        <Col xs={2} className="UploadFileCard__Col p-0 d-flex justify-content-end align-items-center">
+          <Icon.XCircleFill width={30} height={30} fill={`#a70000`} />
         </Col>
       </Row>
     </Container>
