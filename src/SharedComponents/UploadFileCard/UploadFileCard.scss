@@ -11,8 +11,19 @@
   }
 
   .UploadFileCard__Col {
+    strong {
+      padding-left: 5px;
+      padding-right: 5px;
+    }
+
     svg {
       cursor: pointer;
+    }
+  }
+
+  .UploadFileCard__image {
+    img {
+      height: 100px;
     }
   }
 }
