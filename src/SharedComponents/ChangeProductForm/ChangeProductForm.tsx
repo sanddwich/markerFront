@@ -234,13 +234,39 @@ const ChangeProductForm = (props: ChangeProductFormProps) => {
     })
   }
 
-  const addProductImages = (): void => {}
+  const addProductImages = (): void => {
+    let formData = new FormData()
+    uploadImages.map((file) => {
+      console.log(file)
+      formData.append('uploadFiles', file)
+    })
+    console.log(formData)
+    
+    // const api = axios.create({
+    //   baseURL: Config.backConnectData.backendURL,
+    //   withCredentials: true,
+    //   headers: {
+    //     Authorization: `Bearer ${props.app.marketUser?.apiToken}`,
+    //   },
+    // })
+
+    // api.post('/api/admin/product/upload-files', formData).then((res) => {
+    //   console.log(res.data)
+    // })
+  }
 
   const inputFilesHandler = (event: React.ChangeEvent<HTMLInputElement>): void => {
     const fileList: FileList = event.target.files as FileList
+
+    // let formData = new FormData()
+    // for (const key of Object.keys(fileList)) {
+    //   formData.append('imgCollection', fileList[parseInt(key)])
+    // }
+    // console.log(formData)
+
     setUploadImages((prevState) => {
       for (let i = 0; i < fileList.length; i++) {
-        const file = fileList.item(i) as File  
+        const file = fileList.item(i) as File
         if (!prevState.find(f => f.name === file.name)) {
           prevState.push(file)
         }
@@ -248,12 +274,11 @@ const ChangeProductForm = (props: ChangeProductFormProps) => {
       return prevState
     })
     setUploadFilesCont(Math.random())
-    console.log(uploadImages)
   }
 
   const deleteFileCard = (name: string): void => {
     setUploadImages((prevState) => {
-      return prevState.filter(card => card.name !== name)
+      return prevState.filter((card) => card.name !== name)
     })
     setUploadFilesCont(Math.random())
   }
@@ -378,7 +403,7 @@ const ChangeProductForm = (props: ChangeProductFormProps) => {
                 <React.Fragment>
                   <Container key={uploadFilesCont} fluid className="ChangeProductForm__fileList">
                     <Row className="m-0">
-                      {uploadImages.map((uploadImage, index) => {                        
+                      {uploadImages.map((uploadImage, index) => {
                         return (
                           <Col xl={3} lg={4} md={6} sm={12} key={index} className="ChangeProductForm__fileListEl p-0">
                             <UploadFileCard file={uploadImage} deleteHandler={deleteFileCard} />
