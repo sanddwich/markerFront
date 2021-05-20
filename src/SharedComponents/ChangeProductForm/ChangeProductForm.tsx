@@ -234,35 +234,41 @@ const ChangeProductForm = (props: ChangeProductFormProps) => {
     })
   }
 
-  const addProductImages = (): void => {
-    let formData = new FormData()
-    uploadImages.map((file) => {
-      console.log(file)
-      formData.append('uploadFiles', file)
-    })
-    console.log(formData)
-    
-    // const api = axios.create({
-    //   baseURL: Config.backConnectData.backendURL,
-    //   withCredentials: true,
-    //   headers: {
-    //     Authorization: `Bearer ${props.app.marketUser?.apiToken}`,
-    //   },
-    // })
+  const uploadFile = async (file: File): Promise<any> => {
+    const formData = new FormData()
+    formData.append('uploadFile', file, file.name)
 
-    // api.post('/api/admin/product/upload-files', formData).then((res) => {
-    //   console.log(res.data)
-    // })
+    const api = axios.create({
+      baseURL: Config.backConnectData.backendURL,
+      withCredentials: true,
+      headers: {
+        Authorization: `Bearer ${props.app.marketUser?.apiToken}`,
+      },
+    })
+
+    return await api.post('/api/admin/product/upload-files', formData).then((res) => {
+      return res.data.fileName
+    })
+  }
+
+  const addProductImages = async (): Promise<any> => {
+    let uploadedFiles: string[] = []
+    
+    await uploadImages.map( async (file) => {
+      const fileName: string = await uploadFile(file)
+      console.log(fileName)
+      // uploadedFiles.push(fileName)
+    })
   }
 
   const inputFilesHandler = (event: React.ChangeEvent<HTMLInputElement>): void => {
     const fileList: FileList = event.target.files as FileList
 
-    // let formData = new FormData()
+    // const formData = new FormData()
     // for (const key of Object.keys(fileList)) {
     //   formData.append('imgCollection', fileList[parseInt(key)])
     // }
-    // console.log(formData)
+    // console.log(formData.getAll('imgCollection'))
 
     setUploadImages((prevState) => {
       for (let i = 0; i < fileList.length; i++) {
