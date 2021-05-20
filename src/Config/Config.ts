@@ -8,6 +8,7 @@ interface ConfigInterface {
   upload: UploadFiles
   productOperations: ProductOperation[]
   messageTimout: number
+  uploadFilesCount: number
 }
 
 export const Config: ConfigInterface = {
@@ -19,6 +20,7 @@ export const Config: ConfigInterface = {
     // {httpMethod: 'POST', productMethod: 'ADD_PRODUCT', apiLink: '/api/admin/product/changePrice'},
   ],
   messageTimout: 5000,
+  uploadFilesCount: 10,
   upload: {
     images: {
       accept: '.jpg, .jpeg, .png',
