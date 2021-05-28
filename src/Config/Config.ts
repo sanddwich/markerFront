@@ -16,7 +16,6 @@ export const Config: ConfigInterface = {
   },
   productOperations: [
     {httpMethod: 'POST', productMethod: 'CHANGE_PRODUCT', apiLink: '/api/admin/product/create-update'},
-    // {httpMethod: 'POST', productMethod: 'ADD_PRODUCT', apiLink: '/api/admin/product/changePrice'},
   ],
   messageTimout: 5000,
   upload: {

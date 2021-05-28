@@ -22,6 +22,7 @@ import SelectSearch, { fuzzySearch, SelectSearchOption } from 'react-select-sear
 import ProductCategory from '../../Redux/interfaces/AdditionalInterfaces/ProductCategory'
 import SelectSearchComponent from '../SelectSearchComponent/SelectSearchComponent'
 import UploadFileCard from '../UploadFileCard/UploadFileCard'
+import Image from '../../Redux/interfaces/AdditionalInterfaces/Image'
 
 interface ChangeProductFormProps {
   product: Product
@@ -247,18 +248,33 @@ const ChangeProductForm = (props: ChangeProductFormProps) => {
     })
 
     return await api.post('/api/admin/product/upload-files', formData).then((res) => {
-      return res.data.fileName
+      if(res.status === 200) {
+        return res.data.uploadFileName
+      }
+      else return undefined
     })
   }
 
+  const convertDate = ():string => {
+    const date: Date = new Date()
+    const response: string = date.getFullYear().toString() + "-" + date.getMonth().toString() + "-" + date.getDay() + " " + date.getTime()
+    return response
+  }
+
+  const addDBProductImage = async (fileName: string):Promise<any> => {
+    // const image: Image = {
+
+    // }
+  }
+
   const addProductImages = async (): Promise<any> => {
-    let uploadedFiles: string[] = []
     
-    await uploadImages.map( async (file) => {
-      const fileName: string = await uploadFile(file)
-      console.log(fileName)
-      // uploadedFiles.push(fileName)
-    })
+    console.log(convertDate())
+
+    // uploadImages.map( async (file) => {
+    //   const fileName: string = await uploadFile(file)
+    //   addDBProductImage(fileName)
+    // })
   }
 
   const inputFilesHandler = (event: React.ChangeEvent<HTMLInputElement>): void => {

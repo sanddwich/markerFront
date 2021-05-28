@@ -10,7 +10,7 @@ interface UploadFileCardProps {
 
 const UploadFileCard = (props: UploadFileCardProps) => {
   const getMb = (val: number): string => {
-    return (val / 1000000).toFixed(2).toString()
+    return (val / 1000000).toFixed(3).toString()
   }
 
   const getPreview = (): string => {
