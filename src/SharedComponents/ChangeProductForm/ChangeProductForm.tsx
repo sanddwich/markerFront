@@ -22,7 +22,6 @@ import SelectSearch, { fuzzySearch, SelectSearchOption } from 'react-select-sear
 import ProductCategory from '../../Redux/interfaces/AdditionalInterfaces/ProductCategory'
 import SelectSearchComponent from '../SelectSearchComponent/SelectSearchComponent'
 import UploadFileCard from '../UploadFileCard/UploadFileCard'
-import Image from '../../Redux/interfaces/AdditionalInterfaces/Image'
 
 interface ChangeProductFormProps {
   product: Product
@@ -248,48 +247,56 @@ const ChangeProductForm = (props: ChangeProductFormProps) => {
     })
 
     return await api.post('/api/admin/product/upload-files', formData).then((res) => {
-      if(res.status === 200) {
-        return res.data.uploadFileName
-      }
-      else return undefined
+      // console.log(res.data.uploadFileName)
+      return res.data.uploadFileName
     })
   }
 
-  const convertDate = ():string => {
-    const date: Date = new Date()
-    const response: string = date.getFullYear().toString() + "-" + date.getMonth().toString() + "-" + date.getDay() + " " + date.getTime()
-    return response
-  }
-
-  const addDBProductImage = async (fileName: string):Promise<any> => {
-    // const image: Image = {
-
-    // }
-  }
-
   const addProductImages = async (): Promise<any> => {
-    
-    console.log(convertDate())
+    if (uploadImages.length > Config.uploadFilesCount) {
+      showHideToast(
+        `Превышено максимальное количество загружаемых файлов. Вы пытаетесь загрузить ${uploadImages.length} файла(ов)`,
+        true
+      )
+    } else {
+      setUploadImagesLoader(true)
+      let uploadedFiles: string[] = []
+      let errorUploadingFiles: string[] = []
 
-    // uploadImages.map( async (file) => {
-    //   const fileName: string = await uploadFile(file)
-    //   addDBProductImage(fileName)
-    // })
+      uploadImages.map(async (file) => {
+        const fileName: string = await uploadFile(file)
+
+        if (fileName !== '') {
+          uploadedFiles.push(fileName)
+          console.log('Файл загружен: ' + fileName)
+        } else {
+          errorUploadingFiles.push(file.name)
+          console.log('Ошибка загрузки файла: ' + file.name)
+        }
+      })
+
+      showHideToast(`
+        Загружено ${uploadedFiles.length} файлов: ${JSON.stringify(uploadedFiles)}
+        \n Не загружено ${errorUploadingFiles.length} файлов: ${JSON.stringify(errorUploadingFiles)}`,
+        false
+      )
+      
+      setUploadImagesLoader(false)
+
+      setUploadImages((prevState) => {
+        prevState = []
+        return prevState
+      })
+    }
   }
 
   const inputFilesHandler = (event: React.ChangeEvent<HTMLInputElement>): void => {
     const fileList: FileList = event.target.files as FileList
 
-    // const formData = new FormData()
-    // for (const key of Object.keys(fileList)) {
-    //   formData.append('imgCollection', fileList[parseInt(key)])
-    // }
-    // console.log(formData.getAll('imgCollection'))
-
     setUploadImages((prevState) => {
       for (let i = 0; i < fileList.length; i++) {
         const file = fileList.item(i) as File
-        if (!prevState.find(f => f.name === file.name)) {
+        if (!prevState.find((f) => f.name === file.name)) {
           prevState.push(file)
         }
       }
@@ -407,7 +414,7 @@ const ChangeProductForm = (props: ChangeProductFormProps) => {
           </Row>
           <Row>
             <Col className="ChangeProductForm__cont">
-              <Form.Label>Загрузка файла:</Form.Label>
+              <Form.Label>Загрузка файла (Максимальное количество файлов: {Config.uploadFilesCount}):</Form.Label>
               <Form.File
                 id="custom-file-translate-scss"
                 label="Выберете файлы..."
