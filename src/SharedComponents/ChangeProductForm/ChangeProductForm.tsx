@@ -22,6 +22,7 @@ import SelectSearch, { fuzzySearch, SelectSearchOption } from 'react-select-sear
 import ProductCategory from '../../Redux/interfaces/AdditionalInterfaces/ProductCategory'
 import SelectSearchComponent from '../SelectSearchComponent/SelectSearchComponent'
 import UploadFileCard from '../UploadFileCard/UploadFileCard'
+import Image from '../../Redux/interfaces/AdditionalInterfaces/Image'
 
 interface ChangeProductFormProps {
   product: Product
@@ -246,10 +247,18 @@ const ChangeProductForm = (props: ChangeProductFormProps) => {
       },
     })
 
-    return await api.post('/api/admin/product/upload-files', formData).then((res) => {
-      // console.log(res.data.uploadFileName)
-      return res.data.uploadFileName
-    })
+    return await api
+      .post('/api/admin/product/upload-files', formData)
+      .then((res) => {
+        if (res.data.uploadFileName) {
+          return res.data.uploadFileName
+        } else {
+          return ''
+        }
+      })
+      .catch(() => {
+        return ''
+      })
   }
 
   const addProductImages = async (): Promise<any> => {
@@ -260,34 +269,38 @@ const ChangeProductForm = (props: ChangeProductFormProps) => {
       )
     } else {
       setUploadImagesLoader(true)
-      let uploadedFiles: string[] = []
-      let errorUploadingFiles: string[] = []
 
-      uploadImages.map(async (file) => {
-        const fileName: string = await uploadFile(file)
+      let uploadedImagesNames: string[] = []
 
+      for (let i=0; i<uploadImages.length; i++) {
+        const fileName: string = await uploadFile(uploadImages[i])
         if (fileName !== '') {
-          uploadedFiles.push(fileName)
-          console.log('Файл загружен: ' + fileName)
+          uploadedImagesNames.push(fileName)
         } else {
-          errorUploadingFiles.push(file.name)
-          console.log('Ошибка загрузки файла: ' + file.name)
+          console.log('Ошибка загрузки файла: ' + uploadImages[i].name)
         }
-      })
+      }
 
-      showHideToast(`
-        Загружено ${uploadedFiles.length} файлов: ${JSON.stringify(uploadedFiles)}
-        \n Не загружено ${errorUploadingFiles.length} файлов: ${JSON.stringify(errorUploadingFiles)}`,
-        false
-      )
-      
-      setUploadImagesLoader(false)
+      insertImagesIntoDB(uploadedImagesNames)
 
-      setUploadImages((prevState) => {
-        prevState = []
-        return prevState
-      })
+      setUploadImages(() => {return []})
     }
+  }
+
+  const insertImagesIntoDB = async (fileNameList: string[]): Promise<any> => {
+    const product = props.product
+    fileNameList.map((fileName) => {
+      const image: Image = {
+        name: fileName.split("/")[fileName.split("/").length - 1],
+        path: fileName,
+        id: 0,
+      }
+      product.images.push(image);
+    })
+
+    console.log(product)
+
+    setUploadImagesLoader(false)
   }
 
   const inputFilesHandler = (event: React.ChangeEvent<HTMLInputElement>): void => {
@@ -413,44 +426,47 @@ const ChangeProductForm = (props: ChangeProductFormProps) => {
             </Col>
           </Row>
           <Row>
-            <Col className="ChangeProductForm__cont">
-              <Form.Label>Загрузка файла (Максимальное количество файлов: {Config.uploadFilesCount}):</Form.Label>
-              <Form.File
-                id="custom-file-translate-scss"
-                label="Выберете файлы..."
-                data-browse="Обзор"
-                accept={Config.upload.images.accept}
-                size={Config.upload.images.maxSize}
-                multiple
-                custom
-                onChange={inputFilesHandler}
-              />
+            {/* Поле ИЗОБРАЖЕНИЯ (КАРТИНКИ) товара */}
+            {!uploadImagesLoader ? (
+              <Col className="ChangeProductForm__cont">
+                <Form.Label>Загрузка файла (Максимальное количество файлов: {Config.uploadFilesCount}):</Form.Label>
+                <Form.File
+                  id="custom-file-translate-scss"
+                  label="Выберете файлы..."
+                  data-browse="Обзор"
+                  accept={Config.upload.images.accept}
+                  size={Config.upload.images.maxSize}
+                  multiple
+                  custom
+                  onChange={inputFilesHandler}
+                />
 
-              {uploadImagesLoader && <LoaderHorizontal />}
-
-              {uploadImages.length > 0 && (
-                <React.Fragment>
-                  <Container key={uploadFilesCont} fluid className="ChangeProductForm__fileList">
-                    <Row className="m-0">
-                      {uploadImages.map((uploadImage, index) => {
-                        return (
-                          <Col xl={3} lg={4} md={6} sm={12} key={index} className="ChangeProductForm__fileListEl p-0">
-                            <UploadFileCard file={uploadImage} deleteHandler={deleteFileCard} />
-                          </Col>
-                        )
-                      })}
-                    </Row>
-                  </Container>
-                  <div className="ChangeProductForm__nameActions" onClick={() => addProductImages()}>
-                    <ButtonComponent>
-                      <NavbarMenuItem title="Загрузить картинки">
-                        <Icon.CheckCircle width={20} height={20} fill={`#212529`} />
-                      </NavbarMenuItem>
-                    </ButtonComponent>
-                  </div>
-                </React.Fragment>
-              )}
-            </Col>
+                {uploadImages.length > 0 && (
+                  <React.Fragment>
+                    <Container key={uploadFilesCont} fluid className="ChangeProductForm__fileList">
+                      <Row className="m-0">
+                        {uploadImages.map((uploadImage, index) => {
+                          return (
+                            <Col xl={3} lg={4} md={6} sm={12} key={index} className="ChangeProductForm__fileListEl p-0">
+                              <UploadFileCard file={uploadImage} deleteHandler={deleteFileCard} />
+                            </Col>
+                          )
+                        })}
+                      </Row>
+                    </Container>
+                    <div className="ChangeProductForm__nameActions" onClick={() => addProductImages()}>
+                      <ButtonComponent>
+                        <NavbarMenuItem title="Загрузить картинки">
+                          <Icon.CheckCircle width={20} height={20} fill={`#212529`} />
+                        </NavbarMenuItem>
+                      </ButtonComponent>
+                    </div>
+                  </React.Fragment>
+                )}
+              </Col>
+            ) : (
+              <LoaderHorizontal />
+            )}
           </Row>
         </Container>
       )}
